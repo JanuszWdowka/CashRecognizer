@@ -1,0 +1,17 @@
+body{
+    display: flex;
+    background-color: #f5f5f5;
+}
+
+html, body{
+    height: 100%;
+}
+
+.card{
+    width: 32rem;
+    align-items: center;
+}
+
+.buttonMargin{
+    margin-top: 1rem;
+}

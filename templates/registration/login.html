@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+{% block tytul %} Log in {% endblock %}
+
+{% block page %}
+    <main class="text-center m-auto">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Log in</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|bootstrap }}
+
+                    <button type="submit" class="btn btn-primary buttonMargin">Log in <i class="fas fa-sign-in-alt"></i></button>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}
