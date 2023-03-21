@@ -15,3 +15,7 @@ html, body{
 .buttonMargin{
     margin-top: 1rem;
 }
+
+.displayBlock{
+    display: block !important;
+}

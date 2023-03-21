@@ -130,4 +130,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = 'banknotesImages'
 
 LOGIN_URL = ''
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/home/'
+LOGOUT_REDIRECT_URL = '/'
