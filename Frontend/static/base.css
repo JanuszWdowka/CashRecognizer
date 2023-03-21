@@ -19,3 +19,17 @@ html, body{
 .displayBlock{
     display: block !important;
 }
+
+.error{
+    color: red;
+    font-weight: bold;
+}
+
+.form-group{
+    margin-top: 1rem;
+}
+
+.control-label{
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+}
