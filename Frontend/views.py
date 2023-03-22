@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
-from Frontend.forms import BanknoteForm
+from Frontend.forms import BanknoteForm, CheckBanknoteForm
 
 
 # Create your views here.
@@ -19,3 +19,12 @@ def addBanknote_view(request):
         return redirect(home_view)
 
     return render(request, 'addBanknote.html', {'banknote_form': banknote_form})
+
+@login_required
+def checkBanknote_view(request):
+    checkbanknote_form = CheckBanknoteForm(request.POST or None, request.FILES or None)
+
+    if checkbanknote_form.is_valid():
+        return redirect(home_view)
+
+    return render(request, 'checkBanknote.html', {'checkbanknote_form': checkbanknote_form})

@@ -15,7 +15,7 @@
                     <a href="{% url 'admin:index' %}" class="btn btn-primary buttonMargin">Go to database panel <i class="fa-solid fa-database"></i></a>
                     <br>
                 {% endif %}
-                <button class="btn btn-primary buttonMargin">Check the banknote <i class="fa-regular fa-money-bill-1"></i></button>
+                <a href="{% url 'checkBanknote' %}" class="btn btn-primary buttonMargin">Check the banknote <i class="fa-regular fa-money-bill-1"></i></a>
                 <br>
                 <a href="{% url 'logout' %}" class="btn btn-outline-primary buttonMargin">Logout <i class="fas fa-sign-out-alt"></i> </a>
             </div>
