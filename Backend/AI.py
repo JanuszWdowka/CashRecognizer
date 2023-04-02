@@ -1,20 +1,14 @@
 import os
+import shutil
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import shutil
 import plotly.graph_objects as go
-from keras.optimizers import RMSprop
-from sklearn.metrics import confusion_matrix, classification_report
-from tensorflow import keras
-from keras import optimizers
-from keras.preprocessing import image
+from keras.applications import VGG19
 from keras.preprocessing.image import ImageDataGenerator
-from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras import layers
 from tensorflow.python.keras import optimizers
-from tensorflow.python.keras.callbacks import TensorBoard
-from keras.applications import VGG19, VGG16
+from tensorflow.python.keras.models import Sequential
+
 
 def plot_hist(history):
     hist = pd.DataFrame(history.history)
@@ -256,20 +250,20 @@ train_datagen = ImageDataGenerator(
 valid_datagen = ImageDataGenerator(rescale=1./255.)
 
 train_generator = train_datagen.flow_from_directory(directory=train_dir,
-                                                   target_size=(224, 224),
-                                                   batch_size=32,
+                                                   target_size=(600, 300),
+                                                   batch_size=1,
                                                    class_mode='categorical')
 
 valid_generator = valid_datagen.flow_from_directory(directory=valid_dir,
-                                                   target_size=(224, 224),
-                                                   batch_size=32,
+                                                   target_size=(600, 300),
+                                                   batch_size=1,
                                                    class_mode='categorical')
 
 batch_size = 32
 steps_per_epoch = train_size // batch_size
 validation_steps = valid_size // batch_size
 
-conv_base = VGG19(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+conv_base = VGG19(weights='imagenet', include_top=False, input_shape=(600, 300, 3))
 conv_base.trainable = True
 
 def print_layers(model):
@@ -294,26 +288,27 @@ model.add(layers.Dense(units=256, activation='relu'))
 model.add(layers.Dense(units=6, activation='softmax'))
 
 # optimizer = RMSprop(learning_rate=1e-5)
+# optimizer = optimizers.rmsprop_v2.RMSprop(learning_rate=1e-5)
+optimizer = optimizers.adam_v2.Adam(learning_rate=1e-5)
 
-model.compile(optimizer=RMSprop(lr=1e-5),
+model.compile(optimizer=optimizer,
              loss='categorical_crossentropy',
              metrics=['accuracy'])
 
-model.build((None, 224, 224, 3))
+model.build((None, 600, 300, 3))
 model.summary()
 
 history = model.fit(x=train_generator,
                     epochs=10,
                     steps_per_epoch=10,
-                    validation_data=valid_generator,
-                    validation_steps=validation_steps)
+                    validation_data=valid_generator)
 
 # plot_hist(history)
 
 test_datagen = ImageDataGenerator(rescale=1./255.)
 test_generator = test_datagen.flow_from_directory(
     test_dir,
-    target_size=(224, 224),
+    target_size=(600, 300),
     batch_size=1,
     class_mode='categorical',
     shuffle=False
