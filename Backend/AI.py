@@ -269,7 +269,7 @@ batch_size = 32
 steps_per_epoch = train_size // batch_size
 validation_steps = valid_size // batch_size
 
-conv_base = VGG19(weights='imagenet', include_top=False, input_shape=(224, 224, 3), )
+conv_base = VGG19(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
 conv_base.trainable = True
 
 def print_layers(model):
@@ -293,9 +293,9 @@ model.add(layers.Flatten())
 model.add(layers.Dense(units=256, activation='relu'))
 model.add(layers.Dense(units=6, activation='softmax'))
 
-optimizer = RMSprop(learning_rate=1e-5)
+# optimizer = RMSprop(learning_rate=1e-5)
 
-model.compile(optimizer='rmsprop',
+model.compile(optimizer=RMSprop(lr=1e-5),
              loss='categorical_crossentropy',
              metrics=['accuracy'])
 
@@ -303,12 +303,12 @@ model.build((None, 224, 224, 3))
 model.summary()
 
 history = model.fit(x=train_generator,
-                     steps_per_epoch=steps_per_epoch,
-                     epochs=10,    # 100
-                     validation_data=valid_generator,
-                     validation_steps=validation_steps)
+                    epochs=10,
+                    steps_per_epoch=10,
+                    validation_data=valid_generator,
+                    validation_steps=validation_steps)
 
-plot_hist(history)
+# plot_hist(history)
 
 test_datagen = ImageDataGenerator(rescale=1./255.)
 test_generator = test_datagen.flow_from_directory(
