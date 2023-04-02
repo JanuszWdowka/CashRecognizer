@@ -3,10 +3,12 @@ import shutil
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+from sklearn.metrics import confusion_matrix, classification_report
 from keras.applications import VGG19
 from keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras import layers
 from tensorflow.python.keras import optimizers
+from tensorflow.python.keras.callbacks import ModelCheckpoint
 from tensorflow.python.keras.models import Sequential
 
 
@@ -31,7 +33,7 @@ def plot_hist(history):
 
 np.set_printoptions(precision=6, suppress=True)
 
-base_dir = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes'
+base_dir = '../Banknotes'
 raw_no_of_files = {}
 classes = ['Poland_10', 'Poland_20', 'Poland_50', 'Poland_100', 'Poland_200', 'Poland_500']
 for dir in classes:
@@ -259,7 +261,7 @@ valid_generator = valid_datagen.flow_from_directory(directory=valid_dir,
                                                    batch_size=1,
                                                    class_mode='categorical')
 
-batch_size = 32
+batch_size = 1
 steps_per_epoch = train_size // batch_size
 validation_steps = valid_size // batch_size
 
@@ -287,9 +289,7 @@ model.add(layers.Flatten())
 model.add(layers.Dense(units=256, activation='relu'))
 model.add(layers.Dense(units=6, activation='softmax'))
 
-# optimizer = RMSprop(learning_rate=1e-5)
-# optimizer = optimizers.rmsprop_v2.RMSprop(learning_rate=1e-5)
-optimizer = optimizers.adam_v2.Adam(learning_rate=1e-5)
+optimizer = optimizers.rmsprop_v2.RMSprop(learning_rate=1e-5)
 
 model.compile(optimizer=optimizer,
              loss='categorical_crossentropy',
@@ -299,11 +299,12 @@ model.build((None, 600, 300, 3))
 model.summary()
 
 history = model.fit(x=train_generator,
-                    epochs=10,
-                    steps_per_epoch=10,
-                    validation_data=valid_generator)
+                    epochs=4,
+                    steps_per_epoch=200,
+                    validation_data=valid_generator,
+                    validation_steps=validation_steps)
 
-# plot_hist(history)
+plot_hist(history)
 
 test_datagen = ImageDataGenerator(rescale=1./255.)
 test_generator = test_datagen.flow_from_directory(
@@ -314,8 +315,48 @@ test_generator = test_datagen.flow_from_directory(
     shuffle=False
 )
 
-y_prob = model.predict_generator(test_generator, test_generator.samples)
-y_prob
+filenames = test_generator.filenames
+nb_samples = len(filenames)
+y_prob = model.predict(x= test_generator,
+                       steps=nb_samples)
+print(y_prob)
 
+y_pred = np.argmax(y_prob, axis=1)
+print(y_pred)
 
+predictions = pd.DataFrame({'class': y_pred})
+print(predictions)
 
+y_true = test_generator.classes
+print(y_true)
+
+y_pred = predictions['class'].values
+print(y_pred)
+
+print(test_generator.class_indices)
+
+classes = list(test_generator.class_indices.keys())
+print(classes)
+
+cm = confusion_matrix(y_true, y_pred)
+cm
+
+def plot_confusion_matrix(cm):
+    # Mulitclass classification, 3 classes
+    cm = cm[::-1]
+    cm = pd.DataFrame(cm, columns=classes, index=classes[::-1])
+
+    fig = ff.create_annotated_heatmap(z=cm.values, x=list(cm.columns), y=list(cm.index), colorscale='ice', showscale=True, reversescale=True)
+    fig.update_layout(width=500, height=500, title='Confusion Matrix', font_size=16)
+    fig.show()
+
+import plotly.figure_factory as ff
+plot_confusion_matrix(cm)
+
+print(classification_report(y_true, y_pred, target_names=test_generator.class_indices.keys()))
+
+errors = pd.DataFrame({'y_true': y_true, 'y_pred': y_pred}, index=test_generator.filenames)
+print(errors)
+
+errors['is_incorrect'] = (errors['y_true'] != errors['y_pred']) * 1
+print(errors)
