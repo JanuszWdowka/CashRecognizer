@@ -13,6 +13,88 @@ from tensorflow.python.keras.callbacks import ModelCheckpoint
 from tensorflow.python.keras.models import Sequential
 
 
+def createFolder(path):
+    import os
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+    return path
+
+
+def deleteFolder(path):
+    import os
+    if os.path.exists(path):
+        os.remove(path)
+    os.remove(path)
+
+
+def getAllClasses(path):
+    folder_names = []
+    for entry in os.scandir(path):
+        if entry.is_dir():
+            folder_names.append(entry.name)
+    return folder_names
+
+
+def createBaseFoldersTree(path):
+    path = createFolder(path)
+    train_dir = createFolder(os.path.join(path, 'train'))  # katalog zbioru treningowego
+    valid_dir = createFolder(os.path.join(path, 'valid'))  # katalog zbioru walidacyjnego
+    test_dir = createFolder(os.path.join(path, 'test'))  # katalog zbioru testowego
+
+    return train_dir, valid_dir, test_dir
+
+
+def countMinItems(classes, base_dir):
+    items = list()
+    for itemClass in classes:
+        x = os.listdir(os.path.join(base_dir, itemClass))
+        items.append(len([fname for fname in x if fname.split('.')[1].lower() in ['jpg', 'png', 'jpeg']]))
+
+    return min(items)
+
+
+def prepareDataForEachClass(classes: list, base_dir, train_dir, valid_dir, test_dir, train_size=0.5, valid_size=0.2,
+                            info=False):
+    size = countMinItems(classes=classes, base_dir=base_dir)
+    train_size_counted = int(np.floor(train_size * size))
+    valid_size_counted = int(np.floor(valid_size * size))
+    test_size_counted = size - train_size_counted - valid_size_counted
+
+    train_idx = train_size_counted
+    valid_idx = train_size_counted + valid_size_counted
+    test_idx = train_size_counted + valid_size_counted + test_size_counted
+
+    for itemClass in classes:
+        # Prepare folders for each class
+        train_dir_for_class = createFolder(os.path.join(train_dir, itemClass))
+        valid_dir_for_class = createFolder(os.path.join(valid_dir, itemClass))
+        test_dir_for_class = createFolder(os.path.join(test_dir, itemClass))
+        fnames = os.listdir(os.path.join(base_dir, itemClass))
+        fnames = [fname for fname in fnames if fname.split('.')[1].lower() in ['jpg', 'png', 'jpeg']]
+
+        for i, fname in enumerate(fnames):
+            if i <= train_idx:
+                src = os.path.join(base_dir, itemClass, fname)
+                dst = os.path.join(train_dir_for_class, fname)
+                shutil.copyfile(src, dst)
+            elif train_idx < i <= valid_idx:
+                src = os.path.join(base_dir, itemClass, fname)
+                dst = os.path.join(valid_dir_for_class, fname)
+                shutil.copyfile(src, dst)
+            elif valid_idx < i < test_idx:
+                src = os.path.join(base_dir, itemClass, fname)
+                dst = os.path.join(test_dir_for_class, fname)
+                shutil.copyfile(src, dst)
+
+        if info:
+            print(f'{itemClass} - zbiór treningowy', len(os.listdir(train_dir_for_class)))
+            print(f'{itemClass} - zbiór walidacyjny', len(os.listdir(valid_dir_for_class)))
+            print(f'{itemClass} - zbiór testowy', len(os.listdir(test_dir_for_class)))
+
+    return train_size_counted, valid_size_counted, test_size_counted
+
+
 def plot_hist(history):
     hist = pd.DataFrame(history.history)
     hist['epoch'] = history.epoch
@@ -31,9 +113,11 @@ def plot_hist(history):
                       yaxis_type='log')
     fig.show()
 
+
 def print_layers(model):
     for layer in model.layers:
         print(f'layer_name: {layer.name:13} trainable: {layer.trainable}')
+
 
 def plot_confusion_matrix(cm):
     # Mulitclass classification, 3 classes
@@ -49,208 +133,14 @@ def plot_confusion_matrix(cm):
 np.set_printoptions(precision=6, suppress=True)
 
 base_dir = '../Banknotes'
-raw_no_of_files = {}
-classes = ['Poland_10', 'Poland_20', 'Poland_50', 'Poland_100', 'Poland_200', 'Poland_500']
-for dir in classes:
-    raw_no_of_files[dir] = len(os.listdir(os.path.join(base_dir, dir)))
-
-raw_no_of_files.items()
-
 data_dir = '../images'
 
-if not os.path.exists(data_dir):
-    os.mkdir(data_dir)
+classes = getAllClasses(base_dir)
+train_dir, valid_dir, test_dir = createBaseFoldersTree(data_dir)
+train_size, valid_size, test_size = prepareDataForEachClass(classes=classes, base_dir=base_dir, train_dir=train_dir,
+                                                            valid_dir=valid_dir, test_dir=test_dir)
 
-train_dir = os.path.join(data_dir, 'train')  # katalog zbioru treningowego
-valid_dir = os.path.join(data_dir, 'valid')  # katalog zbioru walidacyjnego
-test_dir = os.path.join(data_dir, 'test')  # katalog zbioru testowego
-
-train_Poland_10_dir = os.path.join(train_dir, 'Poland_10')
-train_Poland_20_dir = os.path.join(train_dir, 'Poland_20')
-train_Poland_50_dir = os.path.join(train_dir, 'Poland_50')
-train_Poland_100_dir = os.path.join(train_dir, 'Poland_100')
-train_Poland_200_dir = os.path.join(train_dir, 'Poland_200')
-train_Poland_500_dir = os.path.join(train_dir, 'Poland_500')
-
-valid_Poland_10_dir = os.path.join(valid_dir, 'Poland_10')
-valid_Poland_20_dir = os.path.join(valid_dir, 'Poland_20')
-valid_Poland_50_dir = os.path.join(valid_dir, 'Poland_50')
-valid_Poland_100_dir = os.path.join(valid_dir, 'Poland_100')
-valid_Poland_200_dir = os.path.join(valid_dir, 'Poland_200')
-valid_Poland_500_dir = os.path.join(valid_dir, 'Poland_500')
-
-test_Poland_10_dir = os.path.join(test_dir, 'Poland_10')
-test_Poland_20_dir = os.path.join(test_dir, 'Poland_20')
-test_Poland_50_dir = os.path.join(test_dir, 'Poland_50')
-test_Poland_100_dir = os.path.join(test_dir, 'Poland_100')
-test_Poland_200_dir = os.path.join(test_dir, 'Poland_200')
-test_Poland_500_dir = os.path.join(test_dir, 'Poland_500')
-
-for directory in (train_dir, valid_dir, test_dir):
-    if not os.path.exists(directory):
-        os.mkdir(directory)
-
-dirs = [
-    train_Poland_10_dir,
-    train_Poland_20_dir,
-    train_Poland_50_dir,
-    train_Poland_100_dir,
-    train_Poland_200_dir,
-    train_Poland_500_dir,
-    valid_Poland_10_dir,
-    valid_Poland_20_dir,
-    valid_Poland_50_dir,
-    valid_Poland_100_dir,
-    valid_Poland_200_dir,
-    valid_Poland_500_dir,
-    test_Poland_10_dir,
-    test_Poland_20_dir,
-    test_Poland_50_dir,
-    test_Poland_100_dir,
-    test_Poland_200_dir,
-    test_Poland_500_dir,
-]
-
-for dir in dirs:
-    if not os.path.exists(dir):
-        os.mkdir(dir)
-
-Poland_10_fnames = os.listdir(os.path.join(base_dir, 'Poland_10'))
-Poland_20_fnames = os.listdir(os.path.join(base_dir, 'Poland_20'))
-Poland_50_fnames = os.listdir(os.path.join(base_dir, 'Poland_50'))
-Poland_100_fnames = os.listdir(os.path.join(base_dir, 'Poland_100'))
-Poland_200_fnames = os.listdir(os.path.join(base_dir, 'Poland_200'))
-Poland_500_fnames = os.listdir(os.path.join(base_dir, 'Poland_500'))
-
-Poland_10_fnames = [fname for fname in Poland_10_fnames if fname.split('.')[1].lower() in ['jpg', 'png', 'jpeg']]
-Poland_20_fnames = [fname for fname in Poland_20_fnames if fname.split('.')[1].lower() in ['jpg', 'png', 'jpeg']]
-Poland_50_fnames = [fname for fname in Poland_50_fnames if fname.split('.')[1].lower() in ['jpg', 'png', 'jpeg']]
-Poland_100_fnames = [fname for fname in Poland_100_fnames if fname.split('.')[1].lower() in ['jpg', 'png', 'jpeg']]
-Poland_200_fnames = [fname for fname in Poland_200_fnames if fname.split('.')[1].lower() in ['jpg', 'png', 'jpeg']]
-Poland_500_fnames = [fname for fname in Poland_500_fnames if fname.split('.')[1].lower() in ['jpg', 'png', 'jpeg']]
-
-size = min(len(Poland_10_fnames),
-           len(Poland_20_fnames),
-           len(Poland_50_fnames),
-           len(Poland_100_fnames),
-           len(Poland_200_fnames),
-           len(Poland_500_fnames))
-
-train_size = int(np.floor(0.5 * size))
-valid_size = int(np.floor(0.2 * size))
-test_size = size - train_size - valid_size
-
-train_idx = train_size
-valid_idx = train_size + valid_size
-test_idx = train_size + valid_size + test_size
-
-for i, fname in enumerate(Poland_10_fnames):
-    if i <= train_idx:
-        src = os.path.join(base_dir, 'Poland_10', fname)
-        dst = os.path.join(train_Poland_10_dir, fname)
-        shutil.copyfile(src, dst)
-    elif train_idx < i <= valid_idx:
-        src = os.path.join(base_dir, 'Poland_10', fname)
-        dst = os.path.join(valid_Poland_10_dir, fname)
-        shutil.copyfile(src, dst)
-    elif valid_idx < i < test_idx:
-        src = os.path.join(base_dir, 'Poland_10', fname)
-        dst = os.path.join(test_Poland_10_dir, fname)
-        shutil.copyfile(src, dst)
-
-for i, fname in enumerate(Poland_20_fnames):
-    if i <= train_idx:
-        src = os.path.join(base_dir, 'Poland_20', fname)
-        dst = os.path.join(train_Poland_20_dir, fname)
-        shutil.copyfile(src, dst)
-    elif train_idx < i <= valid_idx:
-        src = os.path.join(base_dir, 'Poland_20', fname)
-        dst = os.path.join(valid_Poland_20_dir, fname)
-        shutil.copyfile(src, dst)
-    elif valid_idx < i < test_idx:
-        src = os.path.join(base_dir, 'Poland_20', fname)
-        dst = os.path.join(test_Poland_20_dir, fname)
-        shutil.copyfile(src, dst)
-
-for i, fname in enumerate(Poland_50_fnames):
-    if i <= train_idx:
-        src = os.path.join(base_dir, 'Poland_50', fname)
-        dst = os.path.join(train_Poland_50_dir, fname)
-        shutil.copyfile(src, dst)
-    elif train_idx < i <= valid_idx:
-        src = os.path.join(base_dir, 'Poland_50', fname)
-        dst = os.path.join(valid_Poland_50_dir, fname)
-        shutil.copyfile(src, dst)
-    elif valid_idx < i < test_idx:
-        src = os.path.join(base_dir, 'Poland_50', fname)
-        dst = os.path.join(test_Poland_50_dir, fname)
-        shutil.copyfile(src, dst)
-
-for i, fname in enumerate(Poland_100_fnames):
-    if i <= train_idx:
-        src = os.path.join(base_dir, 'Poland_100', fname)
-        dst = os.path.join(train_Poland_100_dir, fname)
-        shutil.copyfile(src, dst)
-    elif train_idx < i <= valid_idx:
-        src = os.path.join(base_dir, 'Poland_100', fname)
-        dst = os.path.join(valid_Poland_100_dir, fname)
-        shutil.copyfile(src, dst)
-    elif valid_idx < i < test_idx:
-        src = os.path.join(base_dir, 'Poland_100', fname)
-        dst = os.path.join(test_Poland_100_dir, fname)
-        shutil.copyfile(src, dst)
-
-for i, fname in enumerate(Poland_200_fnames):
-    if i <= train_idx:
-        src = os.path.join(base_dir, 'Poland_200', fname)
-        dst = os.path.join(train_Poland_200_dir, fname)
-        shutil.copyfile(src, dst)
-    elif train_idx < i <= valid_idx:
-        src = os.path.join(base_dir, 'Poland_200', fname)
-        dst = os.path.join(valid_Poland_200_dir, fname)
-        shutil.copyfile(src, dst)
-    elif valid_idx < i < test_idx:
-        src = os.path.join(base_dir, 'Poland_200', fname)
-        dst = os.path.join(test_Poland_200_dir, fname)
-        shutil.copyfile(src, dst)
-
-for i, fname in enumerate(Poland_500_fnames):
-    if i <= train_idx:
-        src = os.path.join(base_dir, 'Poland_500', fname)
-        dst = os.path.join(train_Poland_500_dir, fname)
-        shutil.copyfile(src, dst)
-    elif train_idx < i <= valid_idx:
-        src = os.path.join(base_dir, 'Poland_500', fname)
-        dst = os.path.join(valid_Poland_500_dir, fname)
-        shutil.copyfile(src, dst)
-    elif valid_idx < i < test_idx:
-        src = os.path.join(base_dir, 'Poland_500', fname)
-        dst = os.path.join(test_Poland_500_dir, fname)
-        shutil.copyfile(src, dst)
-
-print('Poland_10 - zbiór treningowy', len(os.listdir(train_Poland_10_dir)))
-print('Poland_10 - zbiór walidacyjny', len(os.listdir(valid_Poland_10_dir)))
-print('Poland_10 - zbiór testowy', len(os.listdir(test_Poland_10_dir)))
-
-print('Poland_20 - zbiór treningowy', len(os.listdir(train_Poland_20_dir)))
-print('Poland_20 - zbiór walidacyjny', len(os.listdir(valid_Poland_20_dir)))
-print('Poland_20 - zbiór testowy', len(os.listdir(test_Poland_20_dir)))
-
-print('Poland_50 - zbiór treningowy', len(os.listdir(train_Poland_50_dir)))
-print('Poland_50 - zbiór walidacyjny', len(os.listdir(valid_Poland_50_dir)))
-print('Poland_50 - zbiór testowy', len(os.listdir(test_Poland_50_dir)))
-
-print('Poland_100 - zbiór treningowy', len(os.listdir(train_Poland_100_dir)))
-print('Poland_100 - zbiór walidacyjny', len(os.listdir(valid_Poland_100_dir)))
-print('Poland_100 - zbiór testowy', len(os.listdir(test_Poland_100_dir)))
-
-print('Poland_200 - zbiór treningowy', len(os.listdir(train_Poland_200_dir)))
-print('Poland_200 - zbiór walidacyjny', len(os.listdir(valid_Poland_200_dir)))
-print('Poland_200 - zbiór testowy', len(os.listdir(test_Poland_200_dir)))
-
-print('Poland_500 - zbiór treningowy', len(os.listdir(train_Poland_500_dir)))
-print('Poland_500 - zbiór walidacyjny', len(os.listdir(valid_Poland_500_dir)))
-print('Poland_500 - zbiór testowy', len(os.listdir(test_Poland_500_dir)))
+exit(0)
 
 train_datagen = ImageDataGenerator(
     rotation_range=10,  # zakres kąta o który losowo zostanie wykonany obrót obrazów
@@ -282,10 +172,6 @@ validation_steps = valid_size // batch_size
 
 conv_base = VGG19(weights='imagenet', include_top=False, input_shape=(600, 300, 3))
 conv_base.trainable = True
-
-
-
-
 
 set_trainable = False
 for layer in conv_base.layers:
@@ -355,10 +241,6 @@ print(classes)
 
 cm = confusion_matrix(y_true, y_pred)
 cm
-
-
-
-
 
 plot_confusion_matrix(cm)
 
