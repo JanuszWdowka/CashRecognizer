@@ -140,7 +140,6 @@ train_dir, valid_dir, test_dir = createBaseFoldersTree(data_dir)
 train_size, valid_size, test_size = prepareDataForEachClass(classes=classes, base_dir=base_dir, train_dir=train_dir,
                                                             valid_dir=valid_dir, test_dir=test_dir)
 
-exit(0)
 
 train_datagen = ImageDataGenerator(
     rotation_range=10,  # zakres kąta o który losowo zostanie wykonany obrót obrazów
