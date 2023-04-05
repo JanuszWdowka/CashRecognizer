@@ -199,7 +199,7 @@ model.build((None, 600, 300, 3))
 model.summary()
 
 history = model.fit(x=train_generator,
-                    epochs=4,
+                    epochs=30,
                     steps_per_epoch=200,
                     validation_data=valid_generator,
                     validation_steps=validation_steps)
