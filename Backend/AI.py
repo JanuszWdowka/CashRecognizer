@@ -156,20 +156,23 @@ train_datagen = ImageDataGenerator(
 valid_datagen = ImageDataGenerator(rescale=1. / 255.)
 
 train_generator = train_datagen.flow_from_directory(directory=train_dir,
-                                                    target_size=(600, 300),
+                                                    target_size=(224, 224),
                                                     batch_size=1,
                                                     class_mode='categorical')
 
 valid_generator = valid_datagen.flow_from_directory(directory=valid_dir,
-                                                    target_size=(600, 300),
+                                                    target_size=(224, 224),
                                                     batch_size=1,
                                                     class_mode='categorical')
 
-batch_size = 1
+batch_size = 2
 steps_per_epoch = train_size // batch_size
 validation_steps = valid_size // batch_size
 
-conv_base = VGG19(weights='imagenet', include_top=False, input_shape=(600, 300, 3))
+filepath = "saved-model-{epoch:02d}-{val_acc:.2f}.hdf5"
+checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+
+conv_base = VGG19(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
 conv_base.trainable = True
 
 set_trainable = False
@@ -195,21 +198,22 @@ model.compile(optimizer=optimizer,
               loss='categorical_crossentropy',
               metrics=['accuracy'])
 
-model.build((None, 600, 300, 3))
+model.build((None, 224, 224, 3))
 model.summary()
 
 history = model.fit(x=train_generator,
-                    epochs=30,
-                    steps_per_epoch=200,
+                    epochs=100,
+                    steps_per_epoch=steps_per_epoch,
                     validation_data=valid_generator,
-                    validation_steps=validation_steps)
+                    validation_steps=validation_steps,
+                    )
 
 plot_hist(history)
 
 test_datagen = ImageDataGenerator(rescale=1. / 255.)
 test_generator = test_datagen.flow_from_directory(
     test_dir,
-    target_size=(600, 300),
+    target_size=(224, 224),
     batch_size=1,
     class_mode='categorical',
     shuffle=False
