@@ -1,8 +1,14 @@
 import time
 import os
-
+import random
+import string
 import urllib.request
 from selenium import webdriver
+
+def get_random_string(lenght):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(lenght))
+    return result_str
 
 i = 0
 isNextPage = True
@@ -14,6 +20,7 @@ driver.implicitly_wait(5)
 
 driver.get('https://archiwum.allegro.pl/kategoria/polska-od-1994-13843?string=500z%C5%82%20banknot')
 banknote_name = "images_500"
+path_banknotes = f'../Banknotes/{banknote_name}'
 time.sleep(5)
 
 while isNextPage:
@@ -37,15 +44,15 @@ while isNextPage:
 
 print(f"Ilość poprawnych linków: {len(links)}")
 
-if not os.path.exists(banknote_name):
-    os.mkdir(banknote_name)
+if not os.path.exists(path_banknotes):
+    os.mkdir(path_banknotes)
 
 for link in links:
     try:
         driver.get(link)
         img_element = driver.find_element_by_css_selector("img[data-role='asi-gallery__image']")
         img_src = img_element.get_attribute("src")
-        urllib.request.urlretrieve(img_src, f"{banknote_name}/{i}.jpg")
+        urllib.request.urlretrieve(img_src, f'{path_banknotes}/{get_random_string(10)}.jpg')
     except Exception:
         print("Chyba nie ma obrazka")
     finally:
