@@ -54,7 +54,7 @@ def countMinItems(classes, base_dir):
     return min(items)
 
 
-def prepareDataForEachClass(classes: list, base_dir, train_dir, valid_dir, test_dir, train_size=0.5, valid_size=0.2,
+def prepareDataForEachClass(classes: list, base_dir, train_dir, valid_dir, test_dir, train_size=0.6, valid_size=0.2,
                             info=False):
     size = countMinItems(classes=classes, base_dir=base_dir)
     train_size_counted = int(np.floor(train_size * size))
@@ -103,14 +103,14 @@ def plot_hist(history):
     fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['accuracy'], name='accuracy', mode='markers+lines'))
     fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['val_accuracy'], name='val_accuracy', mode='markers+lines'))
     fig.update_layout(width=1000, height=500, title='Accuracy vs. Val Accuracy', xaxis_title='Epoki',
-                      yaxis_title='Accuracy', yaxis_type='log')
+                      yaxis_title='Accuracy', yaxis_type='linear')
     fig.show()
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['loss'], name='loss', mode='markers+lines'))
     fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['val_loss'], name='val_loss', mode='markers+lines'))
     fig.update_layout(width=1000, height=500, title='Loss vs. Val Loss', xaxis_title='Epoki', yaxis_title='Loss',
-                      yaxis_type='log')
+                      yaxis_type='linear')
     fig.show()
 
 
@@ -165,7 +165,7 @@ valid_generator = valid_datagen.flow_from_directory(directory=valid_dir,
                                                     batch_size=1,
                                                     class_mode='categorical')
 
-batch_size = 2
+batch_size = 1
 steps_per_epoch = train_size // batch_size
 validation_steps = valid_size // batch_size
 
@@ -177,7 +177,7 @@ conv_base.trainable = True
 
 set_trainable = False
 for layer in conv_base.layers:
-    if layer.name == 'block5_conv1':
+    if layer.name == 'block4_conv1':
         set_trainable = True
     if set_trainable:
         layer.trainable = True
@@ -189,6 +189,7 @@ print_layers(conv_base)
 model = Sequential()
 model.add(conv_base)
 model.add(layers.Flatten())
+model.add(layers.Dropout(0.2))
 model.add(layers.Dense(units=256, activation='relu'))
 model.add(layers.Dense(units=6, activation='softmax'))
 
@@ -201,8 +202,9 @@ model.compile(optimizer=optimizer,
 model.build((None, 224, 224, 3))
 model.summary()
 
+
 history = model.fit(x=train_generator,
-                    epochs=100,
+                    epochs=20,
                     steps_per_epoch=steps_per_epoch,
                     validation_data=valid_generator,
                     validation_steps=validation_steps,
