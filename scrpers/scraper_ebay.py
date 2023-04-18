@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 
-url = 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2334524.m570.l1313&_nkw=20+pounds+uk&_sacat=0&LH_TitleDesc=0&_odkw=10+pounds+uk&_osacat=0&_ipg=240'
+url = 'https://www.ebay.com/sch/i.html?_from=R40&_nkw=50+pounds&_sacat=0&_ipg=240'
 
 response = requests.get(url)
 html = response.content
@@ -33,5 +33,5 @@ for i, link in enumerate(auction_links):
 
     for j, url in enumerate(image_urls):
         response = requests.get(url)
-        with open(f'../Banknotes/UK_20/{i}-{j}.jpg', 'wb') as f:
+        with open(f'../Banknotes/UK_50/{i}-{j}.jpg', 'wb') as f:
             f.write(response.content)
