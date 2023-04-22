@@ -132,8 +132,8 @@ def plot_confusion_matrix(cm):
 
 np.set_printoptions(precision=6, suppress=True)
 
-base_dir = '../Banknotes'
-data_dir = '../images'
+base_dir = '../../Banknotes'
+data_dir = '../../images'
 
 classes = getAllClasses(base_dir)
 train_dir, valid_dir, test_dir = createBaseFoldersTree(data_dir)
@@ -191,7 +191,7 @@ model.add(conv_base)
 model.add(layers.Flatten())
 model.add(layers.Dropout(0.2))
 model.add(layers.Dense(units=256, activation='relu'))
-model.add(layers.Dense(units=6, activation='softmax'))
+model.add(layers.Dense(units=len(classes), activation='softmax'))
 
 optimizer = optimizers.rmsprop_v2.RMSprop(learning_rate=1e-5)
 
@@ -207,8 +207,7 @@ history = model.fit(x=train_generator,
                     epochs=20,
                     steps_per_epoch=steps_per_epoch,
                     validation_data=valid_generator,
-                    validation_steps=validation_steps,
-                    )
+                    validation_steps=validation_steps)
 
 plot_hist(history)
 
