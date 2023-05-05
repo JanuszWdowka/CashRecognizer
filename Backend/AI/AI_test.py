@@ -5,12 +5,6 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 from sklearn.metrics import confusion_matrix, classification_report
-from keras.applications import VGG19
-from keras.preprocessing.image import ImageDataGenerator
-from tensorflow.python.keras import layers
-from tensorflow.python.keras import optimizers
-from tensorflow.python.keras.callbacks import ModelCheckpoint
-from tensorflow.python.keras.models import Sequential
 
 from Backend.AI.AIModel import AIModel
 from Backend.AI.Generators import Generator
@@ -154,18 +148,18 @@ validation_steps = valid_size // batch_size
 
 ai_model = AIModel()
 
-# ai_model.load()
-# ai_model.model.summary()
-ai_model.buildModel(classesNo=len(classes), load_weights=False)
-ai_model.trainModel(train_generator=train_generator,
-                    valid_generator=valid_generator,
-                    train_size=train_size,
-                    valid_size=valid_size,
-                    batch_size=1,
-                    epochs=1,
-                    save_heights=False)
+ai_model.load()
+ai_model.model.summary()
+# ai_model.buildModel(classesNo=len(classes), load_weights=False)
+# ai_model.trainModel(train_generator=train_generator,
+#                     valid_generator=valid_generator,
+#                     train_size=train_size,
+#                     valid_size=valid_size,
+#                     batch_size=1,
+#                     epochs=100,
+#                     save_heights=False)
 
-ai_model.save_model()
+# ai_model.save_model()
 
 ai_model.plot_hist()
 

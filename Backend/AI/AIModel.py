@@ -78,20 +78,47 @@ class AIModel:
 
     def buildModel(self, classesNo, load_weights = False):
         try:
-            conv_base = VGG19(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-            conv_base.trainable = True
+            # conv_base = VGG19(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+            # conv_base.trainable = True
+            #
+            # set_trainable = False
+            # for layer in conv_base.layers:
+            #     if layer.name == 'block4_conv1':
+            #         set_trainable = True
+            #     if set_trainable:
+            #         layer.trainable = True
+            #     else:
+            #         layer.trainable = False
 
-            set_trainable = False
-            for layer in conv_base.layers:
-                if layer.name == 'block4_conv1':
-                    set_trainable = True
-                if set_trainable:
-                    layer.trainable = True
-                else:
-                    layer.trainable = False
+            # print(conv_base.summary());
             model = Sequential()
 
-            model.add(conv_base)
+            model.add(layers.Conv2D(64, (3, 3), padding='same', activation='relu', input_shape=(224, 224, 3)))
+            model.add(layers.Conv2D(64, (3, 3), padding='same', activation='relu'))
+            model.add(layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+            model.add(layers.Conv2D(128, (3, 3), padding='same', activation='relu'))
+            model.add(layers.Conv2D(128, (3, 3), padding='same', activation='relu'))
+            model.add(layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+            model.add(layers.Conv2D(256, (3, 3), padding='same', activation='relu'))
+            model.add(layers.Conv2D(256, (3, 3), padding='same', activation='relu'))
+            model.add(layers.Conv2D(256, (3, 3), padding='same', activation='relu'))
+            model.add(layers.Conv2D(256, (3, 3), padding='same', activation='relu'))
+            model.add(layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+            model.add(layers.Conv2D(512, (3, 3), padding='same', activation='relu'))
+            model.add(layers.Conv2D(512, (3, 3), padding='same', activation='relu'))
+            model.add(layers.Conv2D(512, (3, 3), padding='same', activation='relu'))
+            model.add(layers.Conv2D(512, (3, 3), padding='same', activation='relu'))
+            model.add(layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+            model.add(layers.Conv2D(512, (3, 3), padding='same', activation='relu'))
+            model.add(layers.Conv2D(512, (3, 3), padding='same', activation='relu'))
+            model.add(layers.Conv2D(512, (3, 3), padding='same', activation='relu'))
+            model.add(layers.Conv2D(512, (3, 3), padding='same', activation='relu'))
+            model.add(layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
             model.add(layers.Flatten())
             model.add(layers.Dropout(0.2))
             model.add(layers.Dense(units=256, activation='relu'))
