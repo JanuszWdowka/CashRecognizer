@@ -1,4 +1,7 @@
 from os.path import exists
+import tensorflow as tf
+from PIL import Image
+import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from keras.applications import VGG19
@@ -6,6 +9,9 @@ from tensorflow.python.keras import layers
 from tensorflow.python.keras import optimizers
 from tensorflow.python.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.python.keras.models import Sequential, load_model
+
+
+
 
 
 class AIModel:
@@ -166,8 +172,49 @@ class AIModel:
                                           validation_steps=validation_steps,
                                           callbacks=callbacks)
 
-        except Exception:
-            print("Coś poszło nie tak!")
+        except Exception as ex:
+            print(str(ex))
+
+    def predictByImagePath(self, imagePath):
+        try:
+            if self.model is None:
+                raise Exception("Model nie został zdefiniowany")
+            img = Image.open(imagePath)
+
+            if img == None:
+                raise Exception("Obraz nie znaleziony")
+
+            img = np.array(img)
+            img_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
+            img_tensor = tf.image.resize(img_tensor, [224, 224])
+            img_tensor = tf.expand_dims(img_tensor, 0)
+
+            return self.__predictionLogic(img_tensor)
+
+        except Exception as ex:
+            print(str(ex))
+
+
+    def predictByImage(self, image):
+        try:
+            if self.model is None:
+                raise Exception("Model nie został zdefiniowany")
+
+            return self.__predictionLogic(image)
+
+        except Exception as ex:
+            print(str(ex))
+
+    def __predictionLogic(self, image):
+        try:
+            if self.model is None:
+                raise Exception("Model nie został zdefiniowany")
+
+            prediction = self.model.predict(x=image)
+            predicted_class = np.argmax(prediction, axis=1)
+            return predicted_class[0]
+        except Exception as ex:
+            print(str(ex))
 
     def get_config(self):
 

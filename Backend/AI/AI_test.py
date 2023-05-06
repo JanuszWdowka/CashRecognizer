@@ -156,12 +156,33 @@ ai_model.model.summary()
 #                     train_size=train_size,
 #                     valid_size=valid_size,
 #                     batch_size=1,
-#                     epochs=100,
+#                     epochs=2000,
 #                     save_heights=False)
 
 # ai_model.save_model()
+# ai_model.plot_hist()
 
-ai_model.plot_hist()
+
+# jeśli chcesz predykrtować plik przy pomocy ścieżki użyj tej funckji i podaj ścieżkę
+path="../../Banknotes/Poland_100/34.jpg"
+x = ai_model.predictByImagePath(path)
+# Jeśli chcesz predyktowac plik przez podanie gotowego obrazu jako obiektu w python musi być przygotowany w następujący
+# sposób:
+#
+# import tensorflow as tf
+# import numpy as np
+# from PIL import Image
+# img = Image.open(imagePath)
+# img = np.array(img)
+# img_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
+# img_tensor = tf.image.resize(img_tensor, [224, 224])
+# img_tensor = tf.expand_dims(img_tensor, 0)
+#
+
+# Obie funkcje zwracją pozycję klasy którą rozpoznał model, więc odwołując się do naszykch klas możemy wyciągnąć nazwę
+# tej klasy (patrz linijkę niżej):
+print(classes[x])
+
 
 filenames = test_generator.filenames
 nb_samples = len(filenames)
