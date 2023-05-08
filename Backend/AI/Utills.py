@@ -19,7 +19,7 @@ def getBanknote(imagePath):
     edge_sobel = sobel(blurred_image)
 
     # binaryzacja i zamknięcie - przekształcenia morfologiczne służące do usunięcia małych artefaktów
-    thresh = skimage.filters.threshold_otsu(edge_sobel)
+    thresh = skimage.filters.threshold_li(edge_sobel)
     binary = edge_sobel > thresh
     closed = binary_closing(binary, disk(3))
 
@@ -46,3 +46,63 @@ def getBanknote(imagePath):
 
     axes[1].imshow(banknote, cmap="gray")
     axes[1].set_title("Obraz po wycięciu")
+    plt.show()
+
+    return banknote
+
+
+def map_to_255(y):
+    y_min, y_max = np.min(y), np.max(y)
+    return (y - y_min) * 255 / (y_max - y_min)
+
+def prepareHistogram(image):
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    r_hist, r_bins = np.histogram(image[:, :, 0].ravel(), bins=256, range=[0, 256])
+    g_hist, g_bins = np.histogram(image[:, :, 1].ravel(), bins=256, range=[0, 256])
+    b_hist, b_bins = np.histogram(image[:, :, 2].ravel(), bins=256, range=[0, 256])
+
+    # r_hist = map_to_255(r_hist)
+    # g_hist = map_to_255(g_hist)
+    # b_hist = map_to_255(b_hist)
+
+    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+
+    ax[0].plot(r_hist, color='red', label='Red')
+    ax[0].plot(g_hist, color='green', label='Green')
+    ax[0].plot(b_hist, color='blue', label='Blue')
+
+    ax[1].imshow(image, cmap="gray")
+
+    plt.show()
+
+
+def getAvgRGB(image) -> (float, float, float):
+    # Wczytanie obrazu
+    img = image
+
+    # Obliczenie średnich wartości natężenia RGB
+    avg_r = img[:, :, 0].mean()
+    avg_g = img[:, :, 1].mean()
+    avg_b = img[:, :, 2].mean()
+
+    # Wyświetlenie wyników
+    print(f"Średnie natężenie RGB: R={avg_r:.2f}, G={avg_g:.2f}, B={avg_b:.2f}")
+    return avg_r, avg_g, avg_b
+
+
+# imagePath1 = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes/Poland_10/38.jpg'
+# imagePath2 = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes/Poland_20/1_front.jpg'
+# imagePath3 = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes/Euro_5/1-0.jpg'
+# image1 = getBanknote(imagePath1)
+# prepareHistogram(image1)
+# (r,g,b) = getAvgRGB(image1)
+#
+# image2 = getBanknote(imagePath2)
+# prepareHistogram(image2)
+# (r,g,b) = getAvgRGB(image2)
+#
+# image3 = getBanknote(imagePath3)
+# prepareHistogram(image3)
+# (r,g,b) = getAvgRGB(image3)
