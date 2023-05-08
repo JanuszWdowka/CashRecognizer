@@ -5,6 +5,7 @@ from skimage.filters import sobel
 from skimage.morphology import binary_closing, disk
 from skimage.measure import label, regionprops
 import skimage
+import easyocr
 
 
 def getBanknote(imagePath):
@@ -91,6 +92,62 @@ def getAvgRGB(image) -> (float, float, float):
     print(f"Średnie natężenie RGB: R={avg_r:.2f}, G={avg_g:.2f}, B={avg_b:.2f}")
     return avg_r, avg_g, avg_b
 
+def getProportion(image):
+    height, width, _ = image.shape
+    return width / height
+
+def getBanknoteValue(image):
+    width, height = image.shape[1], image.shape[0]
+
+    right_upper_corner = image[0:height//2, width//2:width]
+    left_upper_corner = image[:height//3, :width//3]
+    right_lower_corner = image[height//2:, width//2:]
+    left_lower_corner = image[height//2:height, 0:width//3]
+
+    numbers = getNumbersFromImage(image)
+    numbers_right_upper = getNumbersFromImage(right_upper_corner)
+    numbers_left_upper = getNumbersFromImage(left_upper_corner)
+    numbers_right_lower = getNumbersFromImage(right_lower_corner)
+    numbers_left_lower = getNumbersFromImage(left_lower_corner)
+    value = 0
+
+    if numbers and (numbers[0]%10 == 0 or numbers[0] == 2.0 or numbers[0] == 5.0 or numbers[0] == 1.0):
+        value = numbers[0]
+    elif numbers_right_upper and (numbers_right_upper[0]%10 == 0 or numbers_right_upper[0] == 2.0 or numbers_right_upper[0] == 5.0 or numbers_right_upper[0] == 1.0):
+        value = numbers_right_upper[0]
+    elif numbers_left_upper and (numbers_left_upper[0]%10 == 0 or numbers_left_upper[0] == 2.0 or numbers_left_upper[0] == 5.0 or numbers_left_upper[0] == 1.0):
+        value = numbers_left_upper[0]
+    elif numbers_right_lower and (numbers_right_lower[0]%10 == 0 or numbers_right_lower[0] == 2.0 or numbers_right_lower[0] == 5.0 or numbers_right_lower[0] == 1.0):
+        value = numbers_right_lower[0]
+    elif numbers_left_lower and (numbers_left_lower[0]%10 == 0 or numbers_left_lower[0] == 2.0 or numbers_left_lower[0] == 5.0 or numbers_left_lower[0] == 1.0):
+        value = numbers_left_lower[0]
+    
+    return value
+    
+
+def getNumbersFromImage(image):
+    reader = easyocr.Reader(['en'])
+
+    result = reader.readtext(image)
+    numbers = []
+    
+    for r in result:
+        text = r[1]
+        try:
+            number = float(text)
+            numbers.append(number)
+        except ValueError:
+            pass
+    return numbers
+
+def rotateImage(image):
+    width, height = image.size
+
+    if height > width:
+        image = image.rotate(90, expand=True)
+    
+    return image
+    
 
 # imagePath1 = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes/Poland_10/38.jpg'
 # imagePath2 = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes/Poland_20/1_front.jpg'
