@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Banknote
+from .models import Banknote, UserInput
 
 class BanknoteForm(ModelForm):#model do tworzenia nowych rekordów przez formularz
     class Meta:
@@ -8,5 +8,8 @@ class BanknoteForm(ModelForm):#model do tworzenia nowych rekordów przez formula
 
 class CheckBanknoteForm(ModelForm):#model do tworzenia nowych rekordów przez formularz
     class Meta:
-        model = Banknote
-        fields = ['banknoteFront', 'banknoteBack']
+        model = UserInput
+        fields = ['banknoteImage']
+        labels = {
+            'banknoteImage': 'Banknote Photo'
+        }

@@ -4,7 +4,6 @@ from PIL import Image
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from keras.applications import VGG19
 from tensorflow.python.keras import layers
 from tensorflow.python.keras import optimizers
 from tensorflow.python.keras.callbacks import ModelCheckpoint, EarlyStopping
@@ -33,12 +32,9 @@ class AIModel:
             print("blad zapisu")
             print(str(e))
 
-    def load(self):
+    def load(self, modelPath):
         try:
-            print(self.model_path)
-            print(self.model)
-            self.model = load_model('./model_data.h5')
-            print("2")
+            self.model = tf.keras.models.load_model(modelPath)
 
         except Exception as e:
             print("Bład podczas ladowania modelu")
@@ -84,19 +80,6 @@ class AIModel:
 
     def buildModel(self, classesNo, load_weights = False):
         try:
-            # conv_base = VGG19(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-            # conv_base.trainable = True
-            #
-            # set_trainable = False
-            # for layer in conv_base.layers:
-            #     if layer.name == 'block4_conv1':
-            #         set_trainable = True
-            #     if set_trainable:
-            #         layer.trainable = True
-            #     else:
-            #         layer.trainable = False
-
-            # print(conv_base.summary());
             model = Sequential()
 
             model.add(layers.Conv2D(64, (3, 3), padding='same', activation='relu', input_shape=(224, 224, 3)))
@@ -210,9 +193,13 @@ class AIModel:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
 
+            class_names = ['Euro_10', 'Euro_100', 'Euro_20', 'Euro_200', 'Euro_5', 'Euro_50', 'Euro_500', 'Poland_10', 'Poland_100', 'Poland_20', 'Poland_200', 'Poland_50', 'Poland_500', 'UK_10', 'UK_20', 'UK_5', 'UK_50', 'USA_1', 'USA_10', 'USA_100', 'USA_2', 'USA_20', 'USA_5', 'USA_50']
+
             prediction = self.model.predict(x=image)
             predicted_class = np.argmax(prediction, axis=1)
-            return predicted_class[0]
+            predicted_class_name = class_names[predicted_class[0]]
+
+            return predicted_class_name
         except Exception as ex:
             print(str(ex))
 

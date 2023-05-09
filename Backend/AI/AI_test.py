@@ -148,7 +148,7 @@ validation_steps = valid_size // batch_size
 
 ai_model = AIModel()
 
-ai_model.load()
+ai_model.load(modelPath="./model_data.h5")
 ai_model.model.summary()
 # ai_model.buildModel(classesNo=len(classes), load_weights=False)
 # ai_model.trainModel(train_generator=train_generator,

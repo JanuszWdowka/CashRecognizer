@@ -13,3 +13,6 @@ class Banknote(models.Model):
 
     def valueAndCounty(self):
         return "{} ({})".format(self.value, self.country)
+
+class UserInput(models.Model):
+    banknoteImage = models.ImageField(upload_to='userInput', null=False, blank=False)
