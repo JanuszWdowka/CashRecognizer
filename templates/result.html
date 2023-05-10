@@ -3,28 +3,22 @@
 {% block tytul %} Result {% endblock %}
 
 {% block page %}
-    <main class="text-center m-auto">
-        <div class="card">
-            <div class="card-body">
-                {% if user.is_authenticated %}
-                    <h5 class="card-title">Your Banknote is {{ banknoteCountry }} {{ banknoteValue }}</h5>
-                    <h3>Banknote Front</h3>
-                    <div class="text-center">
-                      <img src="{{ banknoteFront }}" class="rounded result-image">
-                    </div>
-                    <h3>Banknote Back</h3>
-                    <div class="text-center">
-                      <img src="{{ banknoteBack }}" class="rounded result-image">
-                    </div>
-                {% else %}
-                    <h5 class="card-title error">You don't have access to this page</h5>
-                    <a href="{% url 'login' %}" class="btn btn-outline-primary buttonMargin">Back login <i class="fa-solid fa-left-long"></i> </a>
-                {% endif %}
-                {% if user.is_authenticated %}
-                    <a href="{% url 'checkBanknote' %}" class="btn btn-outline-primary buttonMargin">Check again <i class="fa-solid fa-left-long"></i> </a>
-                    <a href="{% url 'logout' %}" class="btn btn-outline-primary buttonMargin">Logout <i class="fa-solid fa-left-long"></i> </a>
-                {% endif %}
-            </div>
+    {% if user.is_authenticated %}
+        <h5 class="card-title">Your Banknote is {{ banknoteCountry }} {{ banknoteValue }}</h5>
+        <h3>Banknote Front</h3>
+        <div class="text-center">
+            <img src="{{ banknoteFront }}" class="rounded result-image">
         </div>
-    </main>
+        <h3>Banknote Back</h3>
+        <div class="text-center">
+            <img src="{{ banknoteBack }}" class="rounded result-image">
+        </div>
+    {% else %}
+        <h5 class="card-title error">You don't have access to this page</h5>
+        <a href="{% url 'login' %}" class="btn btn-outline-primary buttonMargin">Back login <i class="fa-solid fa-left-long"></i> </a>
+    {% endif %}
+    {% if user.is_authenticated %}
+        <a href="{% url 'checkBanknote' %}" class="btn btn-outline-primary buttonMargin">Check again <i class="fa-solid fa-left-long"></i> </a>
+        <a href="{% url 'logout' %}" class="btn btn-outline-primary buttonMargin">Logout <i class="fa-solid fa-left-long"></i> </a>
+    {% endif %}
 {% endblock %}

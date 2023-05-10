@@ -3,21 +3,15 @@
 {% block tytul %} Add Banknote {% endblock %}
 
 {% block page %}
-    <main class="text-center m-auto">
-        <div class="card">
-            <div class="card-body">
-                {% if user.is_superuser %}
-                    <h5 class="card-title">Add Banknote</h5>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ banknote_form|bootstrap  }}
-                        <button type="submit" class="btn btn-primary buttonMargin">Add Banknote <i class="fa-solid fa-plus"></i></button>
-                    </form>
-                {% else %}
-                    <h5 class="card-title error">You don't have access to this page</h5>
-                {% endif %}
-                <a href="{% url 'home' %}" class="btn btn-outline-primary buttonMargin">Back <i class="fa-solid fa-left-long"></i> </a>
-            </div>
-        </div>
-    </main>
+    {% if user.is_superuser %}
+        <h5 class="card-title">Add Banknote</h5>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ banknote_form|bootstrap  }}
+            <button type="submit" class="btn btn-primary buttonMargin">Add Banknote <i class="fa-solid fa-plus"></i></button>
+        </form>
+    {% else %}
+        <h5 class="card-title error">You don't have access to this page</h5>
+    {% endif %}
+    <a href="{% url 'home' %}" class="btn btn-outline-primary buttonMargin">Back <i class="fa-solid fa-left-long"></i> </a>
 {% endblock %}

@@ -39,3 +39,18 @@ html, body{
     align-items: center;
     padding: 0rem 1rem;
 }
+
+.logo{
+    position: absolute;
+    top: 10px;
+    width: 15rem;
+}
+
+#logoRight{
+    right: 10px;
+}
+
+#logoLeft{
+    left: 10px;
+    transform: scaleX(-1);
+}

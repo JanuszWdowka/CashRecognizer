@@ -3,21 +3,15 @@
 {% block tytul %} Check Banknote {% endblock %}
 
 {% block page %}
-    <main class="text-center m-auto">
-        <div class="card">
-            <div class="card-body">
-                {% if user.is_authenticated %}
-                    <h5 class="card-title">Check Banknote</h5>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ checkbanknote_form|bootstrap  }}
-                        <button type="submit" class="btn btn-primary buttonMargin">Check <i class="fa-regular fa-money-bill-1"></i></button>
-                    </form>
-                {% else %}
-                    <h5 class="card-title error">You don't have access to this page</h5>
-                {% endif %}
-                <a href="{% url 'home' %}" class="btn btn-outline-primary buttonMargin">Back <i class="fa-solid fa-left-long"></i> </a>
-            </div>
-        </div>
-    </main>
+    {% if user.is_authenticated %}
+        <h5 class="card-title">Check Banknote</h5>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ checkbanknote_form|bootstrap  }}
+            <button type="submit" class="btn btn-primary buttonMargin">Check <i class="fa-regular fa-money-bill-1"></i></button>
+        </form>
+    {% else %}
+        <h5 class="card-title error">You don't have access to this page</h5>
+    {% endif %}
+    <a href="{% url 'home' %}" class="btn btn-outline-primary buttonMargin">Back <i class="fa-solid fa-left-long"></i> </a>
 {% endblock %}

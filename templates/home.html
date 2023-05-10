@@ -3,22 +3,16 @@
 {% block tytul %} Home {% endblock %}
 
 {% block page %}
-    <main class="text-center m-auto">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Home</h5>
-                {% if user.is_superuser %}
-                    <a href="{% url 'addBanknote' %}" class="btn btn-primary buttonMargin">Add a new banknote to the database <i class="fa-solid fa-plus"></i></a>
-                    <br>
-                    <button class="btn btn-primary buttonMargin">Start teaching <i class="fa-solid fa-book-open"></i></button>
-                    <br>
-                    <a href="{% url 'admin:index' %}" class="btn btn-primary buttonMargin">Go to database panel <i class="fa-solid fa-database"></i></a>
-                    <br>
-                {% endif %}
-                <a href="{% url 'checkBanknote' %}" class="btn btn-primary buttonMargin">Check the banknote <i class="fa-regular fa-money-bill-1"></i></a>
-                <br>
-                <a href="{% url 'logout' %}" class="btn btn-outline-primary buttonMargin">Logout <i class="fas fa-sign-out-alt"></i> </a>
-            </div>
-        </div>
-    </main>
+    <h5 class="card-title">Home</h5>
+    {% if user.is_superuser %}
+        <a href="{% url 'addBanknote' %}" class="btn btn-primary buttonMargin">Add a new banknote to the database <i class="fa-solid fa-plus"></i></a>
+        <br>
+{#        <button class="btn btn-primary buttonMargin">Start teaching <i class="fa-solid fa-book-open"></i></button>#}
+{#        <br>#}
+        <a href="{% url 'admin:index' %}" class="btn btn-primary buttonMargin">Go to database panel <i class="fa-solid fa-database"></i></a>
+        <br>
+    {% endif %}
+    <a href="{% url 'checkBanknote' %}" class="btn btn-primary buttonMargin">Check the banknote <i class="fa-regular fa-money-bill-1"></i></a>
+    <br>
+    <a href="{% url 'logout' %}" class="btn btn-outline-primary buttonMargin">Logout <i class="fas fa-sign-out-alt"></i></a>
 {% endblock %}
