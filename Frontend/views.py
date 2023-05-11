@@ -1,12 +1,12 @@
-import os
-
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from pyasn1.type.univ import Null
 
 from Frontend.forms import BanknoteForm, CheckBanknoteForm
 from Frontend.models import Banknote, UserInput
 from Backend.AI.AIModel import AIModel
+
 
 # Create your views here.
 
@@ -36,18 +36,19 @@ def checkBanknote_view(request):
         userbanknoteImagePath = userbanknote.banknoteImage.path
 
         ai_model = AIModel()
-        # nie umiem zrobić żeby tutaj nie było na sztywno ścieżki bo django startuje nie z ścieżki projektu
-        ai_model.load(modelPath="C:/Users/Janusz/Documents/GitHub/CashRecognizer/Backend/AI/model_data.h5")
+        modelPath = settings.STATIC_ROOT + 'model\\model_data.h5'
+        modelPath = modelPath.replace('\\', '/')
+        ai_model.load(modelPath= modelPath)
         resultFromAI = ai_model.predictByImagePath(imagePath=userbanknoteImagePath)
-
-        country, value = resultFromAI.split('_')
-        banknot = Banknote.objects.get(value=value, country=country)
-        banknoteFrontPath = '/media/' + banknot.banknoteFront.name
-        banknoteBackPath = '/media/' + banknot.banknoteBack.name
-        return render(request, 'result.html', {'banknoteValue': value,
-                                           'banknoteCountry': country,
-                                           'banknoteFront': banknoteFrontPath,
-                                           'banknoteBack': banknoteBackPath})
+        if resultFromAI:
+            country, value = resultFromAI.split('_')
+            banknot = Banknote.objects.get(value=value, country=country)
+            banknoteFrontPath = '/media/' + banknot.banknoteFront.name
+            banknoteBackPath = '/media/' + banknot.banknoteBack.name
+            return render(request, 'result.html', {'banknoteValue': value,
+                                               'banknoteCountry': country,
+                                               'banknoteFront': banknoteFrontPath,
+                                               'banknoteBack': banknoteBackPath})
 
     return render(request, 'checkBanknote.html', {'checkbanknote_form': checkbanknote_form})
 

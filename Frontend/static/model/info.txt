@@ -1,0 +1,1 @@
+Tutaj wstawić kopię modelu, wtedy django nie potrzebuje bezwzględnej ścieżki
