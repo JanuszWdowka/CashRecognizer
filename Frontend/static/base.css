@@ -15,16 +15,25 @@ i{
 }
 
 form{
-    margin:20px;
+    margin: 0px;
+}
+.form-group div{
+    height: 5px;
 }
 
 .help-block{
     display: block;
     font-size: 8px;
-    top: 20px;
+    position: absolute;
+    margin: auto;
+    width: 100%;
+    top: 90px;
 }
 
-
+input[type="file"] {
+    visibility: hidden;
+    height: 0;
+}
 
 label[for=id_banknoteFront], label[for=id_banknoteBack], label[for=id_banknoteImage]{
     border-radius: 4px;
@@ -69,9 +78,8 @@ label[for=id_banknoteFront], label[for=id_banknoteBack], label[for=id_banknoteIm
     color: red;
     font-weight: bold;
 }
-
 .form-group{
-    margin-top: 1rem;
+    height: 80px;
 }
 
 .control-label{
@@ -82,7 +90,7 @@ label[for=id_banknoteFront], label[for=id_banknoteBack], label[for=id_banknoteIm
 .result-image{
     width: 32rem;
     align-items: center;
-    padding: 0rem 1rem;
+    margin: 1rem 1rem;
 }
 
 a {
@@ -101,65 +109,30 @@ p {
 
 .section{
     position: relative;
-    width: 100%;
+    width: 60%;
     display: block;
+    margin: auto;
+}
+
+.card-title{
+    margin-bottom: 1rem;
 }
 
 .full-height{
     min-height: 100vh;
 }
 
-.card-3d-wrap {
-    position: relative;
-    width: 500px;
-    max-width: 100%;
-    height: 550px;
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    perspective: 800px;
-    margin-top: 60px;
-}
-
-.card-3d-wrapper {
-    width: 100%;
-    height: 100%;
-    position:absolute;    
-    top: 0;
-    left: 0;  
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    transition: all 600ms ease-out; 
-}
-
-.card-front{
-    width: 100%;
-    height: 100%;
-    background-color: #2a2b38;
+.card{
     background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    background-color: #2a2b38;
+    width: 40vw;
+    height: 80vh;
+    border-radius: 6px;
     background-position: bottom center;
     background-repeat: no-repeat;
     background-size: 300%;
-    position: absolute;
-    border-radius: 6px;
-    left: 0;
-    top: 0;
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    -o-backface-visibility: hidden;
-    backface-visibility: hidden;
-}
-
-.center-wrap{
-    position: absolute;
-    width: 100%;
-    padding: 0 35px;
-    top: 50%;
-    left: 0;
-    transform: translate3d(0, -50%, 35px) perspective(100px);
-    z-index: 20;
-    display: block;
+    margin: 10vh 30vw;
+    text-align: center;
 }
 
 .btn{  
