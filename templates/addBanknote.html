@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load bootstrap %}
 {% block tytul %} Add Banknote {% endblock %}
 
@@ -8,10 +9,13 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ banknote_form|bootstrap  }}
+            <button id="delete" class="btn">Delete files</button>
             <button type="submit" class="btn btn-primary buttonMargin">Add Banknote <i class="fa-solid fa-plus"></i></button>
         </form>
     {% else %}
         <h5 class="card-title error">You don't have access to this page</h5>
     {% endif %}
     <a href="{% url 'home' %}" class="btn btn-outline-primary buttonMargin">Back <i class="fa-solid fa-left-long"></i> </a>
+    <script src="{% static 'utils.js' %}"></script>
+    <script src="{% static 'add.js' %}"></script>
 {% endblock %}
