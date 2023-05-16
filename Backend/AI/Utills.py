@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 from skimage import io
 from skimage.filters import sobel
 from skimage.morphology import binary_closing, disk
-from skimage.measure import label, regionprops
+from skimage.measure import label, regionprops, shannon_entropy
+from scipy import ndimage
+from scipy.stats import skew
 import skimage
 import easyocr
 
@@ -88,6 +90,15 @@ def getAvgRGB(image) -> (float, float, float):
     avg_g = img[:, :, 1].mean()
     avg_b = img[:, :, 2].mean()
 
+    colors = ['r', 'g', 'b']
+
+    # Tworzenie wykresu
+    plt.bar(['Red', 'Green', 'Blue'], [avg_r, avg_g, avg_b], color=colors)
+    plt.xlabel('Color channel')
+    plt.ylabel('Average value')
+    plt.title('Average color values')
+    plt.show()
+
     # Wyświetlenie wyników
     print(f"Średnie natężenie RGB: R={avg_r:.2f}, G={avg_g:.2f}, B={avg_b:.2f}")
     return avg_r, avg_g, avg_b
@@ -147,7 +158,17 @@ def rotateImage(image):
         image = image.rotate(90, expand=True)
     
     return image
+
+def getEntropy(image):
+    return shannon_entropy(image)
+
+def getVariance(image):
+    return ndimage.variance(image)
+
+def getSkewness(image):
+    flatten_image = image.flatten()
     
+    return skew(flatten_image)
 
 # imagePath1 = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes/Poland_10/38.jpg'
 # imagePath2 = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes/Poland_20/1_front.jpg'
