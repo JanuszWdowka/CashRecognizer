@@ -1,8 +1,13 @@
+"""
+Plik zawierający modele bazodanowe używane w aplikacji
+"""
 from django.db import models
 
-# Create your models here.
-
 class Banknote(models.Model):
+    """
+    Model reprezentujący bannknot w bazie.
+    Posiada pola wartość, kraj, zdjęcie tyłu i przodu banknotu
+    """
     value = models.PositiveSmallIntegerField(default=5)
     country = models.CharField(max_length=256, blank=False, null=False)
     banknoteFront = models.ImageField(upload_to='front', null=False, blank=False)
@@ -15,4 +20,8 @@ class Banknote(models.Model):
         return "{} ({})".format(self.value, self.country)
 
 class UserInput(models.Model):
+    """
+    Model reprezentujący wprowadzone dane przez użytkownika do modelu sztucznej inteligencji.
+    Model posiada pole reprezentujące zdjęcie dodane przez użytkownika.
+    """
     banknoteImage = models.ImageField(upload_to='userInput', null=False, blank=False)

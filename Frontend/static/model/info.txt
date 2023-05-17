@@ -1,1 +1,1 @@
-Tutaj wstawić kopię modelu, wtedy django nie potrzebuje bezwzględnej ścieżki
+Tutaj wstawić kopię modelu, którego używa aplikacja frontendowa

@@ -1,5 +1,5 @@
 """
-Klasa pomocnicza posiadająca skrypt do pobierania zdjęć banknotów z Allegro dla dostarczenia modelowi zdjęć na podstawie,
+Plik pomocniczy posiadająca skrypt do pobierania zdjęć banknotów z Allegro dla dostarczenia modelowi zdjęć na podstawie,
 których będzie się uczył. Zdjęcia są zapisywane lokalnie na dysku.
 """
 import time
