@@ -1,3 +1,6 @@
+{#Strona która wyświetla możliwe opcje do wykonania w zależności od uprawnień użytkownia po zalogowaniu#}
+{#Odpowiednio dla admina: dodaj banknot do bazy, przejście do panelu bazodanowego, sprawdzenie bankontu i wylogowanie się z systemu#}
+{#Dla zwykłego usera: sprawdzenie banknotu i wylogowanie się.#}
 {% extends 'base.html' %}
 {% load bootstrap %}
 {% block tytul %} Home {% endblock %}
@@ -7,8 +10,6 @@
     {% if user.is_superuser %}
         <a href="{% url 'addBanknote' %}" class="btn btn-primary buttonMargin">Add a new banknote to the database <i class="fa-solid fa-plus"></i></a>
         <br>
-{#        <button class="btn btn-primary buttonMargin">Start teaching <i class="fa-solid fa-book-open"></i></button>#}
-{#        <br>#}
         <a href="{% url 'admin:index' %}" class="btn btn-primary buttonMargin">Go to database panel <i class="fa-solid fa-database"></i></a>
         <br>
     {% endif %}
