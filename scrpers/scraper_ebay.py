@@ -1,6 +1,9 @@
+"""
+Klasa pomocnicza posiadająca skrypt do pobierania zdjęć banknotów z Ebaya dla dostarczenia modelowi zdjęć na podstawie,
+których będzie się uczył. Zdjęcia są zapisywane lokalnie na dysku.
+"""
 import requests
 from bs4 import BeautifulSoup
-import os
 
 url = 'https://www.ebay.com/sch/i.html?_from=R40&_nkw=50+pounds&_sacat=0&_ipg=240'
 
@@ -13,7 +16,6 @@ auction_links = []
 for a in soup.find_all('a', {'class': 's-item__link'}):
     auction_links.append(a.get('href'))
 
-print(len(auction_links))
 
 for i, link in enumerate(auction_links):
     response = requests.get(link)

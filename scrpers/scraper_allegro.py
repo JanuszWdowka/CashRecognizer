@@ -1,3 +1,7 @@
+"""
+Klasa pomocnicza posiadająca skrypt do pobierania zdjęć banknotów z Allegro dla dostarczenia modelowi zdjęć na podstawie,
+których będzie się uczył. Zdjęcia są zapisywane lokalnie na dysku.
+"""
 import time
 import os
 import random
@@ -42,7 +46,6 @@ while isNextPage:
     finally:
         pass
 
-print(f"Ilość poprawnych linków: {len(links)}")
 
 if not os.path.exists(path_banknotes):
     os.mkdir(path_banknotes)
