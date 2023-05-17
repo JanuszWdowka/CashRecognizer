@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 from tensorflow.python.keras import layers
 from tensorflow.python.keras import optimizers
 from tensorflow.python.keras.callbacks import ModelCheckpoint, EarlyStopping
-from tensorflow.python.keras.models import Sequential, load_model
+from tensorflow.python.keras.models import Sequential
 
 
 

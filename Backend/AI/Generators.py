@@ -1,23 +1,18 @@
-import os
-import shutil
-import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.figure_factory as ff
-from sklearn.metrics import confusion_matrix, classification_report
-from keras.applications import VGG19
 from keras.preprocessing.image import ImageDataGenerator
-from tensorflow.python.keras import layers
-from tensorflow.python.keras import optimizers
-from tensorflow.python.keras.callbacks import ModelCheckpoint
-from tensorflow.python.keras.models import Sequential
 
 
 class Generator:
+    """
+    Klasa generująca różne warianty zdjęcia do nauki dla modelu.
+    """
     def __init__(self):
         self.datagen = self.__create_datagen()
 
     def __create_datagen(self):
+        """
+        Funkcja generująca warianty zdjęć dla modelu sztucznej inteligencji.
+        :return: wygenerowane zdjęcia do nauki
+        """
         train_datagen = ImageDataGenerator(
             rotation_range=10,  # zakres kąta o który losowo zostanie wykonany obrót obrazów
             rescale=1. / 255.,
@@ -33,6 +28,11 @@ class Generator:
         return train_datagen
 
     def get_train_generator(self, train_dir):
+        """
+        Funkcja służąca do pobranie zdjęć do trenowania modelu
+        :param train_dir: ścieżka do folderu z plikami banknotów do trenowania modelu
+        :return: pliki do trenowania
+        """
         train_generator = self.datagen.flow_from_directory(directory=train_dir,
                                                            target_size=(224, 224),
                                                            batch_size=1,
@@ -41,6 +41,11 @@ class Generator:
         return train_generator
 
     def get_valid_generator(self, valid_dir):
+        """
+        Funkcja służąca do pobranie zdjęć do walidacji modelu
+        :param valid_dir: ścieżka do folderu z plikami banknotów do walidacji modelu
+        :return: pliki do walidacji
+        """
         valid_datagen = ImageDataGenerator(rescale=1. / 255.)
         valid_generator = valid_datagen.flow_from_directory(directory=valid_dir,
                                                            target_size=(224, 224),
@@ -50,6 +55,11 @@ class Generator:
         return valid_generator
 
     def get_test_generator(self, test_dir):
+        """
+        Funkcja służąca do pobranie zdjęć do testu modelu
+        :param test_dir: ścieżka do folderu z plikami banknotów do testu modelu
+        :return: pliki do testu
+        """
         test_datagen = ImageDataGenerator(rescale=1. / 255.)
         test_generator = test_datagen.flow_from_directory(directory=test_dir,
                                                           target_size=(224, 224),

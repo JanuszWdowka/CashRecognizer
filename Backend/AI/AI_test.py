@@ -5,7 +5,6 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 from sklearn.metrics import confusion_matrix, classification_report
-
 from Backend.AI.AIModel import AIModel
 from Backend.AI.Generators import Generator
 

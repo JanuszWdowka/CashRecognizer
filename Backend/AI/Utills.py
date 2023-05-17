@@ -1,3 +1,6 @@
+"""
+Plik zawierający funkcje użytkowe dla modelu
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage import io
@@ -11,6 +14,11 @@ import easyocr
 
 
 def getBanknote(imagePath):
+    """
+    Funkcja znajdująca największy element na zdjęciu, który jest uznawany za banknot
+    :param imagePath: ścieżka dostępu do zdjęcia
+    :return: obrobione zdjęcie z wyciętym banknotem
+    """
     # wczytaj obraz banknotu
     image = io.imread(imagePath)
 
@@ -59,16 +67,17 @@ def map_to_255(y):
     return (y - y_min) * 255 / (y_max - y_min)
 
 def prepareHistogram(image):
+    """
+    Funkcja wyliczająca histogram kanałów RGB dla zdjęcia
+    :param image: ścieżka dostępu do zdjęcia
+    :return:
+    """
     import numpy as np
     import matplotlib.pyplot as plt
 
     r_hist, r_bins = np.histogram(image[:, :, 0].ravel(), bins=256, range=[0, 256])
     g_hist, g_bins = np.histogram(image[:, :, 1].ravel(), bins=256, range=[0, 256])
     b_hist, b_bins = np.histogram(image[:, :, 2].ravel(), bins=256, range=[0, 256])
-
-    # r_hist = map_to_255(r_hist)
-    # g_hist = map_to_255(g_hist)
-    # b_hist = map_to_255(b_hist)
 
     fig, ax = plt.subplots(1, 2, figsize=(10, 5))
 
@@ -82,6 +91,11 @@ def prepareHistogram(image):
 
 
 def getAvgRGB(image) -> (float, float, float):
+    """
+    Funkcja wyliczająca średnie natężenie kanałow RBG na zdjęci
+    :param image: ścieżka dostępu do zdjęcia
+    :return: średnie wartości kanałów
+    """
     # Wczytanie obrazu
     img = image
 
@@ -104,10 +118,20 @@ def getAvgRGB(image) -> (float, float, float):
     return avg_r, avg_g, avg_b
 
 def getProportion(image):
+    """
+    Funkcja wyliczająca proporcje długości do szerokości znalezionego banknotu
+    :param image: ścieżka dostępu do zdjęcia
+    :return: wartość propocji szerokości do długości
+    """
     height, width, _ = image.shape
     return width / height
 
 def getBanknoteValue(image):
+    """
+    Funkcja znajdująca wartość banknotu na zdjęciu
+    :param image: ścieżka dostępu do zdjęcia
+    :return: nominał banknotu
+    """
     width, height = image.shape[1], image.shape[0]
 
     right_upper_corner = image[0:height//2, width//2:width]
@@ -137,6 +161,11 @@ def getBanknoteValue(image):
     
 
 def getNumbersFromImage(image):
+    """
+    Funkcja znajdująca liczby na zdjęciu
+    :param image: ścieżka dostępu do zdjęcia
+    :return: znalezione liczby
+    """
     reader = easyocr.Reader(['en'])
 
     result = reader.readtext(image)
@@ -152,6 +181,11 @@ def getNumbersFromImage(image):
     return numbers
 
 def rotateImage(image):
+    """
+    Funkcja obracjąca zdjęcie o 90 stopni
+    :param image: ścieżka dostępu do zdjęcia
+    :return: obrócone zdjęcie
+    """
     width, height = image.size
 
     if height > width:
@@ -160,27 +194,27 @@ def rotateImage(image):
     return image
 
 def getEntropy(image):
+    """
+    Funkcja obliczająca entropię na zdjęciu
+    :param image: ścieżka dostępu do zdjęcia
+    :return: wartość entropii
+    """
     return shannon_entropy(image)
 
 def getVariance(image):
+    """
+    Funkcja obliczająca wariację na zdjęciu
+    :param image: ścieżka dostępu do zdjęcia
+    :return: wartość wariacji
+    """
     return ndimage.variance(image)
 
 def getSkewness(image):
+    """
+    Funkcja obliczająca skośność na zdjęciu
+    :param image: ścieżka dostępu do zdjęcia
+    :return: wartość skośności
+    """
     flatten_image = image.flatten()
     
     return skew(flatten_image)
-
-# imagePath1 = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes/Poland_10/38.jpg'
-# imagePath2 = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes/Poland_20/1_front.jpg'
-# imagePath3 = '/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes/Euro_5/1-0.jpg'
-# image1 = getBanknote(imagePath1)
-# prepareHistogram(image1)
-# (r,g,b) = getAvgRGB(image1)
-#
-# image2 = getBanknote(imagePath2)
-# prepareHistogram(image2)
-# (r,g,b) = getAvgRGB(image2)
-#
-# image3 = getBanknote(imagePath3)
-# prepareHistogram(image3)
-# (r,g,b) = getAvgRGB(image3)
