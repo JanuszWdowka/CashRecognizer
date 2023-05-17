@@ -1,3 +1,12 @@
+/**
+ * Plik z funkcjami narzędziowymi używanymi przez inne pliki JS i HTMLowe projektu
+ */
+
+/**
+ * Funkcja pobierająca etykietę elemementu
+ * @param id id elementu HTMLowego
+ * @returns {*} treść etykiety
+ */
 function getLabelElement(id) {
     let label;
 
@@ -9,6 +18,12 @@ function getLabelElement(id) {
     return label;
 }
 
+/**
+ * Funkcja ustawiająca etykietę
+ * @param id id elementu HTMLowego
+ * @param buttonLabel nazwa przycisku jaką chcemy ustawić
+ * @param file element HTMLowy posiadający plik
+ */
 function setLabel(id, buttonLabel, file) {
     let label = getLabelElement(id);
 
@@ -20,6 +35,12 @@ function setLabel(id, buttonLabel, file) {
     }
 }
 
+/**
+ * Funkcja czyszcząca dane po pliku dodanym do formularza
+ * @param id id elementu HTMLowego
+ * @param buttonLabel nazwa przycisku jaką chcemy ustawić
+ * @param file element HTMLowy posiadający plik
+ */
 function handleDelete(id, buttonLabel, file) {
     let label = getLabelElement(id);
 
