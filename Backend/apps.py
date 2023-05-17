@@ -1,3 +1,4 @@
+"""Plik reprezentujący aplikację w systemie django."""
 from django.apps import AppConfig
 
 
