@@ -14,6 +14,9 @@ from tensorflow.python.keras.models import Sequential
 
 
 class AIModel:
+    """
+    Class represents AI model
+    """
     def __init__(self):
         self.weights_path = 'weights-{epoch:02d}-val_accuracy_{val_accuracy:.4f}-val_loss_{val_loss:.4f}.ckpt'
         self.model_path = "model_data.h5"
@@ -22,6 +25,10 @@ class AIModel:
 
 
     def save_model(self):
+        """
+        Function saves model to file
+        :return:
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -33,42 +40,25 @@ class AIModel:
             print(str(e))
 
     def load(self, modelPath):
+        """
+        Function loads model from file
+        :param modelPath:
+        :return:
+        """
         try:
             self.model = tf.keras.models.load_model(modelPath)
 
         except Exception as e:
             print("Bład podczas ladowania modelu")
             print(str(e))
-
-    def plot_hist(self):
-        try:
-            if self.history is None:
-                raise Exception("History nie istnieje")
-
-            hist = pd.DataFrame(self.history.history)
-            hist['epoch'] = self.history.epoch
-
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['accuracy'], name='accuracy', mode='markers+lines'))
-            fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['val_accuracy'], name='val_accuracy', mode='markers+lines'))
-            fig.update_layout(width=1000, height=500, title='Accuracy vs. Val Accuracy', xaxis_title='Epoki',
-                              yaxis_title='Accuracy', yaxis_type='linear')
-            fig.show()
-
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['loss'], name='loss', mode='markers+lines'))
-            fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['val_loss'], name='val_loss', mode='markers+lines'))
-            fig.update_layout(width=1000, height=500, title='Loss vs. Val Loss', xaxis_title='Epoki',
-                              yaxis_title='Loss',
-                              yaxis_type='linear')
-            fig.show()
-        except Exception:
-            print("Coś poszło nie tak")
-
         finally:
             pass
 
     def modelSummary(self):
+        """
+        Function prints model summary
+        :return:
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -79,6 +69,12 @@ class AIModel:
             print("Coś poszło nie tak!")
 
     def buildModel(self, classesNo, load_weights = False):
+        """
+        Function builds model
+        :param classesNo:
+        :param load_weights:
+        :return:
+        """
         try:
             model = Sequential()
 
@@ -129,6 +125,17 @@ class AIModel:
             print("Budowa modelu nie powiodła się")
 
     def trainModel(self, train_generator, valid_generator, train_size, valid_size, batch_size=1, epochs=20, save_heights = False):
+        """
+        Funcxtion to train model
+        :param train_generator:
+        :param valid_generator:
+        :param train_size:
+        :param valid_size:
+        :param batch_size:
+        :param epochs:
+        :param save_heights:
+        :return:
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -136,9 +143,6 @@ class AIModel:
             steps_per_epoch = train_size // batch_size
             validation_steps = valid_size // batch_size
 
-            earlyStop = EarlyStopping(monitor='val_loss',
-                                      patience=3,
-                                      restore_best_weights=True)
             checkpoint = ModelCheckpoint(filepath=self.weights_path,
                                          save_weights_only=True,
                                          monitor='val_loss',
@@ -159,6 +163,11 @@ class AIModel:
             print(str(ex))
 
     def predictByImagePath(self, imagePath):
+        """
+        Predicts image by image path
+        :param imagePath:
+        :return:
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -179,6 +188,11 @@ class AIModel:
 
 
     def predictByImage(self, image):
+        """
+        Predicts image
+        :param image:
+        :return:
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -189,6 +203,11 @@ class AIModel:
             print(str(ex))
 
     def __predictionLogic(self, image):
+        """
+        Logic of prediction
+        :param image:
+        :return:
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -203,15 +222,40 @@ class AIModel:
         except Exception as ex:
             print(str(ex))
 
-    def get_config(self):
+    def plot_hist(self):
+        """
+        Function draw plot of accuracy and loss
+        :return: None
+        """
+        try:
+            if self.history is None:
+                raise Exception("Histogram nie została zdefiniowany")
 
-        config = super().get_config().copy()
-        config.update({
-            'vocab_size': self.vocab_size,
-            'num_layers': self.num_layers,
-            'units': self.units,
-            'd_model': self.d_model,
-            'num_heads': self.num_heads,
-            'dropout': self.dropout,
-        })
-        return config
+            hist = pd.DataFrame(self.history.history)
+            hist['epoch'] = self.history.epoch
+
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['accuracy'], name='accuracy', mode='markers+lines'))
+            fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['val_accuracy'], name='val_accuracy', mode='markers+lines'))
+            fig.update_layout(width=1000, height=500, title='Accuracy vs. Val Accuracy', xaxis_title='Epoki',
+                              yaxis_title='Accuracy', yaxis_type='linear')
+            fig.show()
+
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['loss'], name='loss', mode='markers+lines'))
+            fig.add_trace(go.Scatter(x=hist['epoch'], y=hist['val_loss'], name='val_loss', mode='markers+lines'))
+            fig.update_layout(width=1000, height=500, title='Loss vs. Val Loss', xaxis_title='Epoki', yaxis_title='Loss',
+                              yaxis_type='linear')
+            fig.show()
+        except Exception as ex:
+            print(str(ex))
+
+
+    def print_layers(self):
+        try:
+            if self.model is None:
+                raise Exception("Model nie został zdefiniowany")
+            for layer in self.model.layers:
+                print(f'layer_name: {layer.name:13} trainable: {layer.trainable}')
+        except Exception as ex:
+            print(str(ex))
