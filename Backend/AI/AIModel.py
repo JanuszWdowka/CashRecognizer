@@ -20,8 +20,10 @@ class AIModel:
         self.model = None
         self.history = None
 
-
     def save_model(self):
+        """
+        Funkcja zapisująca model do pliku
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -33,14 +35,20 @@ class AIModel:
             print(str(e))
 
     def load(self, modelPath):
+        """
+        Funkcja ładująca model z pliku
+        """
         try:
             self.model = tf.keras.models.load_model(modelPath)
 
         except Exception as e:
             print("Bład podczas ladowania modelu")
             print(str(e))
-
+    
     def plot_hist(self):
+        """
+        Funkcja wyświetlająca wykresy Accuracy vs. Val Accuracy oraz Loss vs. Val Loss
+        """
         try:
             if self.history is None:
                 raise Exception("History nie istnieje")
@@ -69,6 +77,9 @@ class AIModel:
             pass
 
     def modelSummary(self):
+        """
+        Funkcja wyświetlająca podsumowanie architektury modelu
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -79,6 +90,11 @@ class AIModel:
             print("Coś poszło nie tak!")
 
     def buildModel(self, classesNo, load_weights = False):
+        """
+        Funkcja budująca model
+        :param classesNo: ilość klas
+        :param load_weights: czy załadować wagi
+        """
         try:
             model = Sequential()
 
@@ -127,8 +143,18 @@ class AIModel:
 
         except Exception:
             print("Budowa modelu nie powiodła się")
-
+    
     def trainModel(self, train_generator, valid_generator, train_size, valid_size, batch_size=1, epochs=20, save_heights = False):
+        """
+        Funkcja do trenindu modelu
+        :param train_generator: zdjęcia do treningu
+        :param valid_generator: zdjęcia do walidacji
+        :param train_size: ilość zdjęc do treningu
+        :param valid_size: ilość zdjęc do walidacji
+        :param batch_size: wielkość paczki
+        :param epochs: ilość epok
+        :param save_heights: czy zapisać wysokości
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -159,6 +185,11 @@ class AIModel:
             print(str(ex))
 
     def predictByImagePath(self, imagePath):
+        """
+        Funkcja która dla zdjęcia znajdującego się pod zadaną ścieżką wykonuje predykcje
+        :param imagePath: ścieżka do pliku
+        :return: nazwa klasy do której zakwalifikowano zdjęcie
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -179,6 +210,11 @@ class AIModel:
 
 
     def predictByImage(self, image):
+        """
+        Funkcja która dla przekazanego zdjęcia wykonuje predykcje
+        :param image: zdjęcie dla którego ma zostać wykonana predykcja
+        :return: nazwa klasy do której zakwalifikowano zdjęcie
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -189,6 +225,11 @@ class AIModel:
             print(str(ex))
 
     def __predictionLogic(self, image):
+        """
+        Funkcja wykonująca predykcję dla zdjęcia
+        :param image: zdjęcie dla którego ma zostać wykonana predykcja
+        :return: nazwa klasy do której zakwalifikowano zdjęcie
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
@@ -204,7 +245,10 @@ class AIModel:
             print(str(ex))
 
     def get_config(self):
-
+        """
+        Funkcja zwracająca konfigurację modelu
+        :return: konfiguracja modelu
+        """
         config = super().get_config().copy()
         config.update({
             'vocab_size': self.vocab_size,
