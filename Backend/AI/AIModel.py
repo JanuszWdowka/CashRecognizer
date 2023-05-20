@@ -9,8 +9,7 @@ from tensorflow.python.keras import optimizers
 from tensorflow.python.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.python.keras.models import Sequential
 
-
-
+from Backend.AI.CustomStops.CustomEarlyStopping import CustomEarlyStopping
 
 
 class AIModel:
@@ -19,7 +18,7 @@ class AIModel:
     """
     def __init__(self):
         self.weights_path = 'weights-{epoch:02d}-val_accuracy_{val_accuracy:.4f}-val_loss_{val_loss:.4f}.ckpt'
-        self.model_path = "model_data.h5"
+        self.model_path = "model_data_v2.h5"
         self.model = None
         self.history = None
 
@@ -107,6 +106,9 @@ class AIModel:
             model.add(layers.Flatten())
             model.add(layers.Dropout(0.2))
             model.add(layers.Dense(units=256, activation='relu'))
+            model.add(layers.Dense(units=128, activation='relu'))
+            model.add(layers.Dense(units=64, activation='relu'))
+            model.add(layers.Dense(units=32, activation='relu'))
             model.add(layers.Dense(units=classesNo, activation='softmax'))
             optimizer = optimizers.rmsprop_v2.RMSprop(learning_rate=1e-5)
 
@@ -148,6 +150,9 @@ class AIModel:
                                          monitor='val_loss',
                                          mode='min',
                                          save_best_only=True)
+
+            custom_early_stopping = CustomEarlyStopping(threshold_acc=0.85, threshold_loss=1.0)
+
             callbacks = None
             if save_heights:
                 callbacks = [checkpoint]
@@ -157,7 +162,7 @@ class AIModel:
                                           steps_per_epoch=steps_per_epoch,
                                           validation_data=valid_generator,
                                           validation_steps=validation_steps,
-                                          callbacks=callbacks)
+                                          callbacks=[custom_early_stopping])
 
         except Exception as ex:
             print(str(ex))

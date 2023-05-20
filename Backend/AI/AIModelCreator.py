@@ -6,7 +6,7 @@ from Backend.AI.CommonFunctions import plot_confusion_matrix
 from Backend.AI.DataPreparer import DataPreparer
 from Backend.AI.Generators import Generator
 
-option = "load"
+option = "create"
 base_dir = '../../Banknotes'
 data_dir = '../../images'
 np.set_printoptions(precision=6, suppress=True)
@@ -29,12 +29,13 @@ validation_steps = valid_size // batch_size
 
 if option == "create":
     ai_model.buildModel(classesNo=len(dataPreparer.getClasses()))
+    ai_model.modelSummary()
     ai_model.trainModel(train_generator=train_generator,
                         valid_generator=valid_generator,
                         train_size=train_size,
                         valid_size=valid_size,
                         batch_size=1,
-                        epochs=2000,
+                        epochs=10000,
                         save_heights=False)
 
     ai_model.save_model()
