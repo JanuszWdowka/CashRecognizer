@@ -6,6 +6,10 @@ from Backend.AI.CommonFunctions import plot_confusion_matrix
 from Backend.AI.DataPreparer import DataPreparer
 from Backend.AI.Generators import Generator
 
+"""
+Skrypt do trenowania, tworzenia, testowania i walidacji modelu
+"""
+
 option = "create"
 base_dir = '../../Banknotes'
 data_dir = '../../images'
