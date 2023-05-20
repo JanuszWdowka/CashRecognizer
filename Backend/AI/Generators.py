@@ -31,7 +31,7 @@ class Generator:
         """
         Funkcja służąca do pobranie zdjęć do trenowania modelu
         :param train_dir: ścieżka do folderu z plikami banknotów do trenowania modelu
-        :return: pliki do trenowania
+        :return: generator do trenowania
         """
         train_generator = self.datagen.flow_from_directory(directory=train_dir,
                                                            target_size=(224, 224),
@@ -44,7 +44,7 @@ class Generator:
         """
         Funkcja służąca do pobranie zdjęć do walidacji modelu
         :param valid_dir: ścieżka do folderu z plikami banknotów do walidacji modelu
-        :return: pliki do walidacji
+        :return: generator do walidacji
         """
         valid_datagen = ImageDataGenerator(rescale=1. / 255.)
         valid_generator = valid_datagen.flow_from_directory(directory=valid_dir,
@@ -58,7 +58,7 @@ class Generator:
         """
         Funkcja służąca do pobranie zdjęć do testu modelu
         :param test_dir: ścieżka do folderu z plikami banknotów do testu modelu
-        :return: pliki do testu
+        :return: generator do testu
         """
         test_datagen = ImageDataGenerator(rescale=1. / 255.)
         test_generator = test_datagen.flow_from_directory(directory=test_dir,

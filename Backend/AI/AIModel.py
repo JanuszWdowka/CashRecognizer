@@ -14,7 +14,7 @@ from Backend.AI.CustomStops.CustomEarlyStopping import CustomEarlyStopping
 
 class AIModel:
     """
-    Class represents AI model
+    Clasa reprezentująca model sieci neuronowej
     """
     def __init__(self):
         self.weights_path = 'weights-{epoch:02d}-val_accuracy_{val_accuracy:.4f}-val_loss_{val_loss:.4f}.ckpt'
@@ -25,8 +25,7 @@ class AIModel:
 
     def save_model(self):
         """
-        Function saves model to file
-        :return:
+        Funkcja zachowująca model
         """
         try:
             if self.model is None:
@@ -40,9 +39,8 @@ class AIModel:
 
     def load(self, modelPath):
         """
-        Function loads model from file
-        :param modelPath:
-        :return:
+        Funckja wczytująca model z pliku
+        :param modelPath: Ściezka do pliku modelu
         """
         try:
             self.model = tf.keras.models.load_model(modelPath)
@@ -55,8 +53,7 @@ class AIModel:
 
     def modelSummary(self):
         """
-        Function prints model summary
-        :return:
+        Funkcja wypisująca podsumowanie modelu
         """
         try:
             if self.model is None:
@@ -69,10 +66,9 @@ class AIModel:
 
     def buildModel(self, classesNo, load_weights = False):
         """
-        Function builds model
-        :param classesNo:
-        :param load_weights:
-        :return:
+        Funkcja budująca model
+        :param classesNo: liczba klas
+        :param load_weights: czy wczytać wagi
         """
         try:
             model = Sequential()
@@ -128,15 +124,14 @@ class AIModel:
 
     def trainModel(self, train_generator, valid_generator, train_size, valid_size, batch_size=1, epochs=20, save_heights = False):
         """
-        Funcxtion to train model
-        :param train_generator:
-        :param valid_generator:
-        :param train_size:
-        :param valid_size:
-        :param batch_size:
-        :param epochs:
-        :param save_heights:
-        :return:
+        Funkcja trenująca model
+        :param train_generator: generator danych treningowych
+        :param valid_generator: generator danych walidacyjnych
+        :param train_size: rozmiar zbioru treningowego
+        :param valid_size: rozmiar zbioru walidacyjnego
+        :param batch_size: rozmiar batcha
+        :param epochs: liczba epok
+        :param save_heights: czy zapisywać wagi
         """
         try:
             if self.model is None:
@@ -169,9 +164,9 @@ class AIModel:
 
     def predictByImagePath(self, imagePath):
         """
-        Predicts image by image path
-        :param imagePath:
-        :return:
+        Przewiduje klasę obraz na podstawie ścieżki zdjęcia
+        :param imagePath: ścieżka zdjęcia
+        :return: Numer przewidzianej klasy
         """
         try:
             if self.model is None:
@@ -194,9 +189,9 @@ class AIModel:
 
     def predictByImage(self, image):
         """
-        Predicts image
-        :param image:
-        :return:
+        Przewiduje klasę obraz na podstawie przekazanego obrazu
+        :param image: obraz
+        :return: Numer przewidzianej klasy
         """
         try:
             if self.model is None:
@@ -209,9 +204,9 @@ class AIModel:
 
     def __predictionLogic(self, image):
         """
-        Logic of prediction
-        :param image:
-        :return:
+        Logika przewidywania klasy obrazu
+        :param image: obraz
+        :return: Numer przewidzianej klasy
         """
         try:
             if self.model is None:
@@ -229,8 +224,7 @@ class AIModel:
 
     def plot_hist(self):
         """
-        Function draw plot of accuracy and loss
-        :return: None
+        Funkcja rysująca wykres dokładności i straty modelu
         """
         try:
             if self.history is None:
@@ -257,6 +251,9 @@ class AIModel:
 
 
     def print_layers(self):
+        """
+        Funkcja wypisująca warstwy modelu
+        """
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
