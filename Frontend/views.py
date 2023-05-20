@@ -54,10 +54,8 @@ def checkBanknote_view(request):
     checkbanknote_form = CheckBanknoteForm(request.POST, request.FILES)
 
     if request.method == 'POST' and checkbanknote_form.is_valid():
-        checkbanknote_form.save()
-        userbanknote = UserInput.objects.get(banknoteImage= 'userInput/' + str(request.FILES.get('banknoteImage')))
-        userbanknoteImagePath = userbanknote.banknoteImage.path
-
+        newBanknot = checkbanknote_form.save()
+        userbanknoteImagePath = newBanknot.banknoteImage.path
         ai_model = AIModel()
         modelPath = settings.STATIC_ROOT + 'model\\model_data.h5'
         modelPath = modelPath.replace('\\', '/')
