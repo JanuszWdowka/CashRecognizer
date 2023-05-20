@@ -62,10 +62,6 @@ def getBanknote(imagePath):
     return banknote
 
 
-def map_to_255(y):
-    y_min, y_max = np.min(y), np.max(y)
-    return (y - y_min) * 255 / (y_max - y_min)
-
 def prepareHistogram(image):
     """
     Funkcja wyliczająca histogram kanałów RGB dla zdjęcia
