@@ -18,7 +18,7 @@ class AIModel:
     """
     def __init__(self):
         self.weights_path = 'weights-{epoch:02d}-val_accuracy_{val_accuracy:.4f}-val_loss_{val_loss:.4f}.ckpt'
-        self.model_path = "model_data_v2.h5"
+        self.model_path = "model_data_v3.h5"
         self.model = None
         self.history = None
 
@@ -146,7 +146,7 @@ class AIModel:
                                          mode='min',
                                          save_best_only=True)
 
-            custom_early_stopping = CustomEarlyStopping(threshold_acc=0.85, threshold_loss=1.0)
+            custom_early_stopping = CustomEarlyStopping(threshold_acc=0.95, threshold_loss=1.0)
 
             callbacks = None
             if save_heights:
@@ -215,6 +215,7 @@ class AIModel:
             class_names = ['Euro_10', 'Euro_100', 'Euro_20', 'Euro_200', 'Euro_5', 'Euro_50', 'Euro_500', 'Poland_10', 'Poland_100', 'Poland_20', 'Poland_200', 'Poland_50', 'Poland_500', 'UK_10', 'UK_20', 'UK_5', 'UK_50', 'USA_1', 'USA_10', 'USA_100', 'USA_2', 'USA_20', 'USA_5', 'USA_50']
 
             prediction = self.model.predict(x=image)
+            predict_pro = self.model.predict_proba(x=image)
             predicted_class = np.argmax(prediction, axis=1)
             predicted_class_name = class_names[predicted_class[0]]
 

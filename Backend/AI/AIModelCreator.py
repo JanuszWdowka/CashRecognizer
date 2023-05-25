@@ -39,7 +39,7 @@ if option == "create":
                         train_size=train_size,
                         valid_size=valid_size,
                         batch_size=1,
-                        epochs=10000,
+                        epochs=100000,
                         save_heights=False)
 
     ai_model.save_model()
@@ -49,6 +49,10 @@ elif option == "load":
     ai_model.model.summary()
 else:
     print("Wrong option")
+
+# path="../../Banknotes/USA_10/1-0.jpg"
+# x = ai_model.predictByImagePath(path)
+
 
 filenames = test_generator.filenames
 nb_samples = len(filenames)
