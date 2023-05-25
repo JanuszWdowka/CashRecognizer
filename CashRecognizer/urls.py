@@ -16,5 +16,5 @@ urlpatterns = [
                   path('home/', home_view, name='home'),  # domowy adres URL
                   path('home/addBanknote/', addBanknote_view, name='addBanknote'),  # adres URL dodawania banknotu
                   path('home/checkBanknote/', checkBanknote_view, name='checkBanknote'),  # adres URL sprawdzania banknotu
-                  path('home/checkBanknote/result', result_view, name='result'),  # adres URL wyniku sztucznej inteligencji
+                  path('home/checkBanknote/result/<value>/<country>/<predictions>/<path:banknoteFrontPath>/<path:banknoteBackPath>/', result_view, name='result_view')  # adres URL wyniku sztucznej inteligencji
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # konfiguracja dostępu do zdjęć z bazu za pomocą linków dla logiki programu

@@ -5,7 +5,6 @@ from math import sqrt
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage import rotate
-from skimage import io
 from skimage.filters import sobel
 from skimage.morphology import binary_closing, disk
 from skimage.measure import label, regionprops, shannon_entropy
@@ -13,7 +12,7 @@ from scipy import ndimage
 from scipy.stats import skew
 import skimage
 from skimage import io, transform
-from skimage.io import imread, imsave
+from skimage.io import imsave
 import os
 import easyocr
 

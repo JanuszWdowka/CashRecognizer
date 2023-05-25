@@ -15,6 +15,10 @@ i{
     margin:10px;
 }
 
+li{
+    text-align: left;
+}
+
 form{
     margin: 0px;
 }
@@ -183,4 +187,8 @@ p {
     margin: auto;
     height: 34px;
     font-size: 10px;
+}
+
+.matchesCard{
+    width: 25rem!important;
 }

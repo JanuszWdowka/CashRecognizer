@@ -1,13 +1,13 @@
 """
 Plik z widokami stron, które przechowują niezbędne informacje i akcje do załadowania danych stron
 """
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from pyasn1.type.univ import Null
 
 from Frontend.forms import BanknoteForm, CheckBanknoteForm
-from Frontend.models import Banknote, UserInput
+from Frontend.models import Banknote
 from Backend.AI.AIModel import AIModel
 
 @login_required
@@ -62,26 +62,57 @@ def checkBanknote_view(request):
         ai_model.load(modelPath= modelPath)
         resultFromAI = ai_model.predictByImagePath(imagePath=userbanknoteImagePath)
         if resultFromAI:
-            country, value = resultFromAI.split('_')
+            country, value = resultFromAI[0].split('_')
+            predictions = resultFromAI[1]
             banknot = Banknote.objects.get(value=value, country=country)
-            banknoteFrontPath = '/media/' + banknot.banknoteFront.name
-            banknoteBackPath = '/media/' + banknot.banknoteBack.name
-            return render(request, 'result.html', {'banknoteValue': value,
-                                               'banknoteCountry': country,
-                                               'banknoteFront': banknoteFrontPath,
-                                               'banknoteBack': banknoteBackPath})
+            return redirect(result_view, value=value, country=country, predictions=predictions, banknoteFrontPath=banknot.banknoteFront.name, banknoteBackPath=banknot.banknoteBack.name)
 
     return render(request, 'checkBanknote.html', {'checkbanknote_form': checkbanknote_form})
 
 
 @login_required
-def result_view(request):
+def result_view(request, value, country, predictions, banknoteFrontPath, banknoteBackPath):
     """
         Widok do wygenerowania pustej strony wyników.
         :param request: Obiekt żądania użyty do wygenerowania tej odpowiedzi.
+        :param value: Wwartość banknotu
+        :param country: Kraj z jakiego jest banknot
+        :param banknoteFrontPath: Zdjęcie banknotu od frontu
+        :param banknoteBackPath: Zdjęcie banknotu od tyłu
         :return: wyrenderowany widok strony result.html
     """
-    return render(request, 'result.html', {'banknoteValue': Null,
-                                           'banknoteCountry': Null,
-                                           'banknoteFront': Null,
-                                           'banknoteBack': Null})
+
+    class_names = ['Euro_10', 'Euro_100', 'Euro_20', 'Euro_200', 'Euro_5', 'Euro_50', 'Euro_500', 'Poland_10',
+                   'Poland_100', 'Poland_20', 'Poland_200', 'Poland_50', 'Poland_500', 'UK_10', 'UK_20', 'UK_5',
+                   'UK_50', 'USA_1', 'USA_10', 'USA_100', 'USA_2', 'USA_20', 'USA_5', 'USA_50']
+    resultmap = {}
+    if predictions.startswith("[[") and predictions.endswith("]]"):
+        predictions = predictions[2:-2]
+
+    # Podziel string na pojedyncze liczby
+    numbers = predictions.split()
+
+    # Przekształć liczby na typ float
+    number_array = [float(num) for num in numbers]
+
+    index = 0
+    for p in number_array:
+        p = round(p * 100, 3)
+        resultmap[class_names[index]] = p
+        index = index + 1
+    resultmap = sorted(resultmap.items(), key=lambda x: x[1], reverse=True)
+
+    matches = []
+    for tuple in resultmap:
+        key, value2 = tuple
+        matches.append(key + ' ' + str(value2) + '%')
+
+    print(matches)
+    banknoteFrontPath = '/media/' + banknoteFrontPath
+    banknoteFrontPath = banknoteFrontPath.replace("/back", "")
+    banknoteBackPath = '/media/back/' + banknoteBackPath
+    return render(request, 'result.html', {'banknoteValue': value,
+                                           'banknoteCountry': country,
+                                           'banknoteFront': banknoteFrontPath,
+                                           'banknoteBack': banknoteBackPath,
+                                           'matches': matches})

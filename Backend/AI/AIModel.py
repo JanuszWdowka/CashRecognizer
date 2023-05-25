@@ -1,6 +1,4 @@
-from os.path import exists
 import tensorflow as tf
-from PIL import Image
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -222,7 +220,7 @@ class AIModel:
             predicted_class = np.argmax(prediction, axis=1)
             predicted_class_name = class_names[predicted_class[0]]
 
-            return predicted_class_name
+            return [predicted_class_name, prediction]
         except Exception as ex:
             print(str(ex))
 

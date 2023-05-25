@@ -15,10 +15,28 @@
     <title>{% block title %} {% endblock %}</title>
 </head>
 <body>
-    <div class="card">
-        <div class="section text-center">
-            {% block page %} {% endblock %}
+    <div class="row">
+        <div class="col-sm-5 ">
+            <div class="card">
+                <div class="section text-center">
+                    {% block page %} {% endblock %}
+                </div>
+            </div>
         </div>
+        {% if '/result/' in request.path %}
+            <div class="col-sm-2">
+                <div class="card matchesCard">
+                    <div class="card-body">
+                        <h5 class="card-title">Percent match</h5>
+                        <ul>
+                            {% for item in matches %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </body>
 </html>
