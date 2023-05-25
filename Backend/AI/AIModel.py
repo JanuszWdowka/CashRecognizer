@@ -10,6 +10,7 @@ from tensorflow.python.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.python.keras.models import Sequential
 
 from Backend.AI.CustomStops.CustomEarlyStopping import CustomEarlyStopping
+from Backend.AI.Utills import prepareDataForImage
 
 
 class AIModel:
@@ -112,8 +113,8 @@ class AIModel:
                           loss='categorical_crossentropy',
                           metrics=['accuracy'])
 
-            if exists('weights-118-val_accuracy_0.9524-val_loss_0.1476.ckpt.index') and load_weights:
-                model.load_weights('weights-118-val_accuracy_0.9524-val_loss_0.1476.ckpt.index')
+            #if exists('weights-118-val_accuracy_0.9524-val_loss_0.1476.ckpt.index') and load_weights:
+                #model.load_weights('weights-118-val_accuracy_0.9524-val_loss_0.1476.ckpt.index')
 
             model.build((None, 224, 224, 3))
 
@@ -171,13 +172,11 @@ class AIModel:
         try:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
-            img = Image.open(imagePath)
-            img = img.convert("RGB")
+            img = prepareDataForImage(imagePath)
 
-            if img == None:
+            if img is None or not img.any():
                 raise Exception("Obraz nie znaleziony")
 
-            img = np.array(img)
             img_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
             img_tensor = tf.image.resize(img_tensor, [224, 224])
             img_tensor = tf.expand_dims(img_tensor, 0)
@@ -214,8 +213,12 @@ class AIModel:
                 raise Exception("Model nie został zdefiniowany")
 
             class_names = ['Euro_10', 'Euro_100', 'Euro_20', 'Euro_200', 'Euro_5', 'Euro_50', 'Euro_500', 'Poland_10', 'Poland_100', 'Poland_20', 'Poland_200', 'Poland_50', 'Poland_500', 'UK_10', 'UK_20', 'UK_5', 'UK_50', 'USA_1', 'USA_10', 'USA_100', 'USA_2', 'USA_20', 'USA_5', 'USA_50']
+
+            # normalizacja danych
+            image = image / 255.0
+
             prediction = self.model.predict(x=image)
-            print(prediction)
+
             predicted_class = np.argmax(prediction, axis=1)
             predicted_class_name = class_names[predicted_class[0]]
 

@@ -70,7 +70,7 @@ def getBanknote(imagePath):
 def prepareHistogram(image):
     """
     Funkcja wyliczająca histogram kanałów RGB dla zdjęcia
-    :param image: ścieżka dostępu do zdjęcia
+    :param image: załadowane zdjęcie
     :return:
     """
     import numpy as np
@@ -94,7 +94,7 @@ def prepareHistogram(image):
 def getAvgRGB(image) -> (float, float, float):
     """
     Funkcja wyliczająca średnie natężenie kanałow RBG na zdjęci
-    :param image: ścieżka dostępu do zdjęcia
+    :param image: załadowane zdjęcie
     :return: średnie wartości kanałów
     """
     # Wczytanie obrazu
@@ -121,7 +121,7 @@ def getAvgRGB(image) -> (float, float, float):
 def getProportion(image):
     """
     Funkcja wyliczająca proporcje długości do szerokości znalezionego banknotu
-    :param image: ścieżka dostępu do zdjęcia
+    :param image: załadowane zdjęcie
     :return: wartość propocji szerokości do długości
     """
     height, width, _ = image.shape
@@ -131,7 +131,7 @@ def getProportion(image):
 def getBanknoteValue(image):
     """
     Funkcja znajdująca wartość banknotu na zdjęciu
-    :param image: ścieżka dostępu do zdjęcia
+    :param image: załadowane zdjęcie
     :return: nominał banknotu
     """
     width, height = image.shape[1], image.shape[0]
@@ -165,7 +165,7 @@ def getBanknoteValue(image):
 def getNumbersFromImage(image):
     """
     Funkcja znajdująca liczby na zdjęciu
-    :param image: ścieżka dostępu do zdjęcia
+    :param image: załadowane zdjęcie
     :return: znalezione liczby
     """
     reader = easyocr.Reader(['en'])
@@ -185,7 +185,7 @@ def getNumbersFromImage(image):
 def rotateImage(image):
     """
     Funkcja obracjąca zdjęcie o 90 stopni
-    :param image: ścieżka dostępu do zdjęcia
+    :param image: załadowane zdjęcie
     :return: obrócone zdjęcie
     """
     height, width, _ = image.shape
@@ -198,7 +198,7 @@ def rotateImage(image):
 def getEntropy(image):
     """
     Funkcja obliczająca entropię na zdjęciu
-    :param image: ścieżka dostępu do zdjęcia
+    :param image: załadowane zdjęcie
     :return: wartość entropii
     """
     return shannon_entropy(image)
@@ -206,7 +206,7 @@ def getEntropy(image):
 def getVariance(image):
     """
     Funkcja obliczająca wariację na zdjęciu
-    :param image: ścieżka dostępu do zdjęcia
+    :param image: załadowane zdjęcie
     :return: wartość wariacji
     """
     return ndimage.variance(image)
@@ -214,7 +214,7 @@ def getVariance(image):
 def getSkewness(image):
     """
     Funkcja obliczająca skośność na zdjęciu
-    :param image: ścieżka dostępu do zdjęcia
+    :param image: załadowane zdjęcie
     :return: wartość skośności
     """
     flatten_image = image.flatten()
@@ -292,15 +292,11 @@ def prepareDataForImage(imagePath):
     proportion = int(getProportion(banknote) * 100)
     if proportion > 255:
         proportion = 255
-    # banknoteValue = int(getBanknoteValue(banknote))
     entropy = int(getEntropy(banknote))
     variance = int(sqrt(getVariance(banknote)))
     skewness = map_range_1_to_0_255(getSkewness(banknote))
 
     values = [avg_r, avg_g, avg_b, proportion, entropy, variance, skewness]
-
-
-    # banknote = resize_image(banknote)
 
     if banknote.shape[2] == 4:
         banknote = banknote[:, :, :3]
@@ -309,7 +305,6 @@ def prepareDataForImage(imagePath):
     y_coords = [0, 10, 20, 30, 40, 50, 60]
 
     for y, value in zip(y_coords,values):
-        # value = int(value) / 255.0
         # Przypisz nową wartość pikselom
         new_value = [value, value, value]
         for x in x_coords:
@@ -366,6 +361,3 @@ def prepareImagesWithFeatures( pathToFolderWithImages):
         createNewImageWithData(file_path)
         x = x + 1
         print(rf"Wykonano: {x} / {len(files_paths)}")
-
-
-# prepareImagesWithFeatures('/Users/adamludwiczak/PycharmProjects/AnalizaDanych/CashRecognizer/Banknotes')
