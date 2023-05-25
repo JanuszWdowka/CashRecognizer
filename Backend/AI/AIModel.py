@@ -172,6 +172,7 @@ class AIModel:
             if self.model is None:
                 raise Exception("Model nie został zdefiniowany")
             img = Image.open(imagePath)
+            img = img.convert("RGB")
 
             if img == None:
                 raise Exception("Obraz nie znaleziony")
@@ -213,9 +214,8 @@ class AIModel:
                 raise Exception("Model nie został zdefiniowany")
 
             class_names = ['Euro_10', 'Euro_100', 'Euro_20', 'Euro_200', 'Euro_5', 'Euro_50', 'Euro_500', 'Poland_10', 'Poland_100', 'Poland_20', 'Poland_200', 'Poland_50', 'Poland_500', 'UK_10', 'UK_20', 'UK_5', 'UK_50', 'USA_1', 'USA_10', 'USA_100', 'USA_2', 'USA_20', 'USA_5', 'USA_50']
-
             prediction = self.model.predict(x=image)
-            predict_pro = self.model.predict_proba(x=image)
+            print(prediction)
             predicted_class = np.argmax(prediction, axis=1)
             predicted_class_name = class_names[predicted_class[0]]
 

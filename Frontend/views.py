@@ -57,7 +57,7 @@ def checkBanknote_view(request):
         newBanknot = checkbanknote_form.save()
         userbanknoteImagePath = newBanknot.banknoteImage.path
         ai_model = AIModel()
-        modelPath = settings.STATIC_ROOT + 'model\\model_data.h5'
+        modelPath = settings.STATIC_ROOT + 'model\\model_data_v3.h5'
         modelPath = modelPath.replace('\\', '/')
         ai_model.load(modelPath= modelPath)
         resultFromAI = ai_model.predictByImagePath(imagePath=userbanknoteImagePath)
