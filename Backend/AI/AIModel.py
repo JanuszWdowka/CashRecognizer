@@ -13,7 +13,7 @@ from Backend.AI.Utills import prepareDataForImage
 
 class AIModel:
     """
-    Clasa reprezentująca model sieci neuronowej
+    Klasa reprezentująca model sieci neuronowej
     """
     def __init__(self):
         self.weights_path = 'weights-{epoch:02d}-val_accuracy_{val_accuracy:.4f}-val_loss_{val_loss:.4f}.ckpt'
@@ -24,7 +24,7 @@ class AIModel:
 
     def save_model(self):
         """
-        Funkcja zachowująca model
+        Funkcja zapisująca model
         """
         try:
             if self.model is None:
@@ -165,7 +165,7 @@ class AIModel:
         """
         Przewiduje klasę obraz na podstawie ścieżki zdjęcia
         :param imagePath: ścieżka zdjęcia
-        :return: Numer przewidzianej klasy
+        :return: Nazwa przewidzianej klasy i procenty dopasowań do klas
         """
         try:
             if self.model is None:
@@ -189,7 +189,7 @@ class AIModel:
         """
         Przewiduje klasę obraz na podstawie przekazanego obrazu
         :param image: obraz
-        :return: Numer przewidzianej klasy
+        :return: Nazwa przewidzianej klasy i procenty dopasowań do klas
         """
         try:
             if self.model is None:
@@ -204,7 +204,7 @@ class AIModel:
         """
         Logika przewidywania klasy obrazu
         :param image: obraz
-        :return: Numer przewidzianej klasy
+        :return: Nazwa przewidzianej klasy i procenty dopasowań do klas
         """
         try:
             if self.model is None:

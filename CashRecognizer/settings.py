@@ -16,7 +16,7 @@ ALLOWED_HOSTS = []
 
 
 
-#zainstalowane aplikacje składające się na projekt
+#Zainstalowane aplikacje składające się na projekt
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     "Backend"
 ]
 
-# Ustawienia dotyczące aplikacji
+#Ustawienia dotyczące aplikacji
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -63,7 +63,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "CashRecognizer.wsgi.application"
 
 
-# Konfiguracja z bazą danych
+#Konfiguracja z bazą danych
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -72,7 +72,7 @@ DATABASES = {
 }
 
 
-# Pakiety dotyczące weryfikacji logowania
+#Pakiety dotyczące weryfikacji logowania
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -89,7 +89,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Ustawienia dotyczące czasu i języka
+#Ustawienia dotyczące czasu i języka
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
@@ -97,7 +97,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Ścieżki dla do folerów projektu zawierające informacje, gdzie znajdują się pliki dla rekordów baz danych, plików statycznych
+#Ścieżki dla do folerów projektu zawierające informacje, gdzie znajdują się pliki dla rekordów baz danych, plików statycznych
 
 STATIC_URL = "static/"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -106,7 +106,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = 'banknotesImages'
 
-# Ustawienia dotyczące strony logującej
+#Ustawienia dotyczące strony logującej
 LOGIN_URL = ''
 LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/'

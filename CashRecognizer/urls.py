@@ -1,5 +1,5 @@
 """
-Plik konfiguracyjny projektu dotyczący linków na serwerze djnago
+Plik konfiguracyjny projektu dotyczący linków na serwerze Django.
 """
 from django.contrib import admin
 from django.urls import path

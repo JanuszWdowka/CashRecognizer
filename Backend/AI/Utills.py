@@ -70,7 +70,6 @@ def prepareHistogram(image):
     """
     Funkcja wyliczająca histogram kanałów RGB dla zdjęcia
     :param image: załadowane zdjęcie
-    :return:
     """
     import numpy as np
     import matplotlib.pyplot as plt
@@ -252,7 +251,7 @@ def map_range_1_to_0_255(x):
 def resize_image(image):
     """
     Funkcja zmieniająca rozmiar zdjęcia na 224x224
-    :param image_path:
+    :param image: plik z zdjęciem
     :return: Przeskalowane zdjęcie
     """
     resized_image = transform.resize(image, (224, 224), anti_aliasing=True)
@@ -333,7 +332,7 @@ def createNewImageWithData(imagePath):
 
     return newPath
 
-def found_all_files( folder):
+def found_all_files(folder):
     """
     Funkcja zwraca listę ścieżek do wszystkich plików w folderze
     :param folder: Ścieżka do folderu
@@ -350,8 +349,7 @@ def found_all_files( folder):
 def prepareImagesWithFeatures( pathToFolderWithImages):
     """
     Funkcja przygotowująca zdjęcia z danymi wraz z cecami banknotów z podanego folderu
-    :param pathToFolderWithImages:
-    :return:
+    :param pathToFolderWithImages: Ścieżka do folderu z zdjęciami
     """
     x = 0
     files_paths = found_all_files(pathToFolderWithImages)

@@ -1,5 +1,5 @@
 """
-Plik z widokami stron, które przechowują niezbędne informacje i akcje do załadowania danych stron
+Plik z widokami stron, które przechowują niezbędne informacje i akcje do załadowania danych stron.
 """
 
 from django.shortcuts import render, redirect

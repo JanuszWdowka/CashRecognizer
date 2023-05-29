@@ -1,4 +1,4 @@
-"""Plik reprezentujący aplikację w systemie django."""
+"""Plik reprezentujący aplikację w systemie Django."""
 from django.apps import AppConfig
 
 class FrontendConfig(AppConfig):

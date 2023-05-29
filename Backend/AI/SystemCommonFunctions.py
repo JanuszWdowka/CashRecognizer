@@ -1,3 +1,6 @@
+"""
+Logika używana do przygotowania danych.
+"""
 import os
 
 def createFolder(path):
